@@ -1,8 +1,9 @@
 function tile_create() {
   const tile = {
-    pop: {
-      // [cultureID]: pop
-    },
+    pop: 0,
+    // pop: {
+    //   // [cultureID]: pop
+    // },
 
     // popOpinion: {
     //   // [cultureID]: pop
@@ -20,9 +21,9 @@ function tile_create() {
       // [cultureID]: cml
     },
 
-    res: {
-      // [resourceEnum]: amount
-    },
+    // res: {
+    //   // [resourceEnum]: amount
+    // },
 
     ter: SYM_TER_DEFAULT, // type
     terMods: {}, // terrain mods
@@ -30,12 +31,12 @@ function tile_create() {
     owner: 0, // playerID (0 = none)
     controller: 0, // playerID (0 = none)
 
-    prov: 0, // provinceID
+    prov: 0, // provinceID, 0 = central
     part: 0, // partID
 
     // buildings:
-    builds: {
-
+    slots: {
+      // [buildingID]: HP
     },
   };
 

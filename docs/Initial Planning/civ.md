@@ -1,4 +1,5 @@
 # Object: Civ
 - government
-- parts
+- parts: continuous chunks of territory
 - provinces (editable)
+  - must be within the same part

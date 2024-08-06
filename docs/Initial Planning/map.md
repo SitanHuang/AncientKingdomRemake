@@ -23,7 +23,7 @@
   - econ growth rate
   - growth rate
   - rebel rate
-  - production output
+  - local production output
   - research output
-  - tax efficiency
+  - production
   - defence
