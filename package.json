@@ -6,13 +6,16 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "watch-less": "less-watch-compiler gui/css gui include.less"
   },
   "author": "Sitan Huang",
   "devDependencies": {
     "jasmine": "^5.2.0",
     "jasmine-browser-runner": "^2.5.0",
     "jasmine-core": "^5.2.0",
+    "less": "^4.2.0",
+    "less-watch-compiler": "^1.16.3",
     "node-file-eval": "^1.0.0"
   }
 }

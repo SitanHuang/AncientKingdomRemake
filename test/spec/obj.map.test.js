@@ -68,4 +68,16 @@ describe('map', function () {
     });
   });
 
+  describe('tile basics', function () {
+    const map = map_create({ width: 111, height: 239 });
+
+    map_fill_blank(map);
+
+    it('has properties row, col, id', function () {
+      expect(tile_id(map_at(map, [0, 1]))).toEqual("0,1");
+      expect(map_at(map, [0, 1]).row).toEqual(0);
+      expect(map_at(map, [0, 1]).col).toEqual(1);
+    });
+  })
+
 });

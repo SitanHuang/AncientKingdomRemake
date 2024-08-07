@@ -1,0 +1,89 @@
+:root {
+  --ui-font: 'Times New Roman', serif;
+  --pane-color: white;
+  --pane-bg: #171a21;
+  --pane-box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.75);
+}
+:root,
+html,
+body {
+  font-family: var(--ui-font);
+  font-size: 12px;
+  user-select: none;
+}
+templates {
+  display: none;
+}
+root,
+root canvas-container,
+root ui-layer {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+  width: 100%;
+  height: 100%;
+}
+root canvas-container {
+  z-index: 1000;
+  background: white;
+}
+root ui-layer {
+  z-index: 2000;
+  background: transparent !important;
+}
+/* UI Components */
+.pane {
+  font-size: 1rem;
+  color: var(--pane-color);
+  background-color: var(--pane-bg);
+  box-shadow: var(--pane-box-shadow);
+  padding: 1em;
+}
+.pane.no-padding,
+.template-start-menu .pane {
+  padding: 0;
+}
+/* Helpers */
+ui-layer > .fill-screen,
+.template-start-menu {
+  width: 100%;
+  height: 100%;
+}
+.centering-grid,
+.template-start-menu {
+  display: grid;
+  place-items: center;
+}
+.centering-grid > *:first-child {
+  display: block;
+  width: auto;
+  height: auto;
+}
+.template-start-menu .pane {
+  font-size: 1.25rem;
+  min-width: 20em;
+  background: #171a21;
+}
+.template-start-menu .pane h1 {
+  text-align: center;
+}
+.template-start-menu .pane item {
+  display: block;
+  font-size: 1.25em;
+  background: inherit;
+  border-top: 1px solid #2f3138;
+  border-bottom: 1px solid #000000;
+  color: #bdbdbd;
+  padding: 0 1em;
+  white-space: nowrap;
+  line-height: 2.5em;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+.template-start-menu .pane item:hover {
+  background: #192533;
+}

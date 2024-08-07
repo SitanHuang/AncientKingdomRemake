@@ -6,17 +6,53 @@
   <title>AKR</title>
 
   <!-- Core: Includes -->
-  <script src="obj/enums.js"></script>
+  <script src="core/ext/logger.min.js"></script>
+  <script src="core/obj/enums.js"></script>
+
   <!-- Core: Dependencies -->
-  <script src="obj/map/map.js"></script>
-  <script src="obj/map/terrain.js"></script>
-  <script src="obj/map/tile.js"></script>
+  <script src="core/obj/map/map.js"></script>
+  <script src="core/obj/map/terrain.js"></script>
+  <script src="core/obj/map/tile.js"></script>
 
   <!-- UI: External -->
   <script src="gui/ext/jquery-3.7.1.min.js"></script>
-  <link rel="stylesheet" href="gui/ext/normalize.css">
+  <script src="gui/ext/pixi.min.js"></script>
+
+  <!-- UI: Includes -->
+  <script src="gui/env.js"></script>
+  <script src="gui/state.js"></script>
+
+  <!-- UI: Dependencies -->
+  <script src="gui/states/startMenu.js"></script>
+  <script src="gui/states/mapEditor.js"></script>
+
+  <script src="gui/ext/less.min.js"></script>
+
+  <link rel="stylesheet" href="gui/include.css">
 </head>
 <body>
+  <root>
+    <canvas-container>
 
+    </canvas-container>
+    <ui-layer>
+
+    </ui-layer>
+  </root>
+  <templates>
+    <div class="template-start-menu">
+      <div class="pane">
+        <h1>AKR</h1>
+        <item onclick="gui_state_dispatchEvent('onMapEditorClick')">
+          Map Editor
+        </item>
+        <item>
+          Exit
+        </item>
+      </div>
+    </div>
+  </templates>
+  <!-- Boot -->
+  <script src="gui/index.js"></script>
 </body>
 </html>

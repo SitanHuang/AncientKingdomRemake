@@ -1,0 +1,39 @@
+.template-start-menu {
+  &:extend(ui-layer > .fill-screen);
+  &:extend(.centering-grid);
+
+  .pane {
+    &:extend(.pane.no-padding);
+
+    font-size: 1.25rem;
+
+    min-width: 20em;
+    background: #171a21;
+
+    h1 {
+      text-align: center;
+    }
+
+    item {
+      display: block;
+
+      font-size: 1.25em;
+
+      background: inherit;
+
+      border-top: 1px solid #2f3138;
+      border-bottom: 1px solid #000000;
+      color: #bdbdbd;
+      padding: 0 1em;
+      white-space: nowrap;
+      line-height: 2.5em;
+
+      cursor: pointer;
+      transition: background 0.1s ease;
+
+      &:hover {
+        background: #192533;
+      }
+    }
+  }
+}

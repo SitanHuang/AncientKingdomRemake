@@ -18,11 +18,20 @@
       - allows webGL & potentially way better performance
     - [SVGjs](https://svgjs.dev/docs/3.2/)
       - need to investigate svg elements count (dynamic draw based on camera?)
+    - [pixiJS](https://github.com/pixijs/pixijs)
+      - no future limits; auto webGPU/webGL
+
+- all user actions must be dedicated API calls
+- all runtime API calls should be async
 
 # Design
 
 - tiles evaluated randomly, since some of them may bring accumulated production
   to zero
+
+## Game Flow
+
+Map Creation -> Scenario Creation (saved GameState)
 
 ## Terrain
 - pop mod & econ mod straight from ak2
@@ -32,7 +41,7 @@
 - speed mod
 
 ## Governance
-- gov split into provincial / central
+- gov split into provincial / national
 - each level of gov has following:
   - accumulated production (money in ak2) <- cannot be negative
   - own accounting system
@@ -54,7 +63,7 @@
   3. Verify provincial validity:
     - If provincial capital no longer controlled/not a city, choose largest pop
       in province as supply center
-    - If fails, delete province. Set tiles to central
+    - If fails, delete province. Set tiles to national
   4. ???
   5. If province has AI, execute AI
 
@@ -65,23 +74,33 @@
     - gov maintenance
     - unit maintenance
     - buildings maintenance
-- all production transfers (tile to provicial capital, provincial capital to
-  capital, capitals back to tile for specific maintenance purposes) are
-  entropic - losses to efficiencies due to travel
-  - tiles/units/buildings without any connection to provincial/central capital
+- all upwards production transfers (tile to provicial capital, provincial
+  capital to capital) are entropic - losses to efficiencies due to travel
+  - tiles/units/buildings without any connection to provincial/national capital
     cannot contribute/consume anything
 
 - production decay????
 
 - Steps:
   1. Calculate travel weights map for A-star for each part
-  2. Transfer: tile to capital based on provID (may be central); must cache
+  2. Transfer: tile to capital based on provID (may be national); must cache
      for each weight query; increases accumulated production
   3. Transfer: all levels of gov "tabs" execute; nearest radius to capital goes
      first, capital goes last
   4. each level of gov consumes governance maintenance
-  5. Transfer: buildings/units maintenance/creation in each tile consumes
-     accumulated production; province goes first, then central
+
+## Consumption System
+
+Tile-based (buildings):
+  - population governance and building maintenance are allotted as fix-rate per
+    taxation cycle
+  - all tile expenses consume own production first, before provincial/national
+    capitals
+
+Units:
+  - funded exclusively from controller (national and/or provincial) through
+    pathfinding
+  - disbands a certain % when maintenance cannot be met
 
 ## Buildings
 
@@ -102,7 +121,7 @@
 
 ## Units
 - permissions:
-  - determine controller (central OR provincial)
+  - determine controller (national and/or provincial)
 - basically a Rhine division
 - has routes; consumes travel speed
 - can be split/combined/disbanded
@@ -110,10 +129,10 @@
   in; when others are below 30% in strength compared to at start of round,
   retreat
 
-- recruited only manually from provincial/central capitals
+- recruited only manually from provincial/national capitals
   - starting at 150%, draws population from capital, decreases radially outward
     until recruit target is met (check pop first)
-- pop is returned on disband to provincial/central capital
+- pop is returned on disband to provincial/national capital
 
 - consumes production every turn
 

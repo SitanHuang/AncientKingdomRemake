@@ -1,8 +1,9 @@
-
-
+/**
+ * a Map fully defines the physical, playable world, but excludes
+ * everything other than the environment (e.g., civs, cultures, ...)
+ */
 function map_create({ width, height }) {
   const map = {
-
     /**
      * Tiles are a 2-D array with nullable elements
      * indicating "holes" in map (for optimization purposes
@@ -57,7 +58,7 @@ function map_del(map, [row, col]) {
 function map_fill_blank(map) {
   for (let r = 0;r < map.height;r++) {
     for (let c = 0; c < map.width;c++) {
-      map_set(map, [r, c], tile_create());
+      map_set(map, [r, c], tile_create({ row: r, col: c }));
     }
   }
 }

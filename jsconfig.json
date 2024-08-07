@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "None",
+    "target": "ES2023",
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "**/*jquery*.js",
+  ],
+  "typeAcquisition": {
+    "include": [
+      "jquery"
+    ]
+  }
+}

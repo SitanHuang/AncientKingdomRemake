@@ -1,6 +1,12 @@
-function tile_create() {
+function tile_create({ row, col }) {
   const tile = {
-    pop: 0,
+    _pop: 0, // TODO: change to cultures; for now this should not be accessed directly
+
+    row: row,
+    col: col,
+
+    id: row + ',' + col,
+
     // pop: {
     //   // [cultureID]: pop
     // },
@@ -26,7 +32,7 @@ function tile_create() {
     // },
 
     ter: SYM_TER_DEFAULT, // type
-    terMods: {}, // terrain mods
+    terAux: {}, // terrain aux mods
 
     owner: 0, // playerID (0 = none)
     controller: 0, // playerID (0 = none)
@@ -41,4 +47,12 @@ function tile_create() {
   };
 
   return tile;
+}
+
+function tile_id(tile) {
+  return tile.id;
+}
+
+function tile_terrainMod(tile) {
+  return terrain_modObj(tile.ter);
 }
