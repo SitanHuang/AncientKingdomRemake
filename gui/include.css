@@ -1,15 +1,38 @@
 :root {
-  --ui-font: 'Times New Roman', serif;
+  --ui-font: Arial, Helvetica, sans-serif;
+  --input-font: var(--ui-font);
   --pane-color: white;
   --pane-bg: #171a21;
   --pane-box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.75);
+  --input-color: white;
+  --input-color-disabled: rgba(255, 255, 255, 0.7);
+  --input-bg: #32353c;
+  --input-bg-hover: #393c44;
+  --button-color: var(--input-color);
+  --button-color-disabled: var(--input-color-disabled);
+  --button-bg: var(--input-bg);
+  --button-bg-hover: var(--input-bg-hover);
+  --button-border: 1px solid rgba(255, 255, 255, 0.12);
+  --button-box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.1);
 }
 :root,
 html,
 body {
   font-family: var(--ui-font);
-  font-size: 12px;
+  font-size: 14px;
   user-select: none;
+  box-sizing: border-box;
+}
+:root *,
+html *,
+body *,
+:root *:before,
+html *:before,
+body *:before,
+:root *:after,
+html *:after,
+body *:after {
+  box-sizing: inherit;
 }
 templates {
   display: none;
@@ -36,22 +59,82 @@ root ui-layer {
   background: transparent !important;
 }
 /* UI Components */
+input,
+button,
+label {
+  font-family: var(--input-font);
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5em;
+  padding: 0.5em;
+  border-radius: 2px;
+  border: none;
+  outline: none;
+}
+input[disabled],
+button[disabled],
+label[disabled] {
+  cursor: not-allowed;
+}
+label {
+  margin-bottom: 0;
+}
+input {
+  color: var(--input-color);
+  background: var(--input-bg);
+}
+input:invalid {
+  outline: 2px solid red;
+}
+input:hover:not([disabled]) {
+  background: var(--input-bg-hover);
+}
+input[disabled] {
+  color: var(--input-color-disabled);
+}
+button {
+  color: var(--button-color);
+  background: var(--button-bg);
+  cursor: pointer;
+}
+button:hover:not([disabled]) {
+  background: var(--button-bg-hover);
+}
+button[disabled] {
+  color: var(--button-color-disabled);
+}
 .pane {
   font-size: 1rem;
   color: var(--pane-color);
-  background-color: var(--pane-bg);
+  background: var(--pane-bg);
   box-shadow: var(--pane-box-shadow);
   padding: 1em;
 }
 .pane.no-padding,
-.template-start-menu .pane {
+.template-start-menu .pane,
+.template-map-editor .left-pane {
   padding: 0;
 }
+.pane divider {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #000000;
+  border-top: 1px solid #2f3138;
+}
 /* Helpers */
+ui-layer {
+  pointer-events: none;
+}
+ui-layer .pane {
+  pointer-events: auto;
+}
 ui-layer > .fill-screen,
-.template-start-menu {
+.template-start-menu,
+.template-map-editor {
   width: 100%;
   height: 100%;
+  background: transparent;
 }
 .centering-grid,
 .template-start-menu {
@@ -71,7 +154,8 @@ ui-layer > .fill-screen,
 .template-start-menu .pane h1 {
   text-align: center;
 }
-.template-start-menu .pane item {
+.template-start-menu .pane item,
+.template-map-editor .left-pane item {
   display: block;
   font-size: 1.25em;
   background: inherit;
@@ -84,6 +168,27 @@ ui-layer > .fill-screen,
   cursor: pointer;
   transition: background 0.1s ease;
 }
-.template-start-menu .pane item:hover {
+.template-start-menu .pane item:hover,
+.template-map-editor .left-pane item:hover {
   background: #192533;
 }
+.template-map-editor {
+  font-size: 1rem;
+  display: block;
+  position: relative;
+}
+.template-map-editor .left-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max(20em, 30%);
+  height: 100%;
+  overflow: auto;
+}
+.template-map-editor .left-pane item {
+  border: none;
+}
+.template-map-editor .left-pane form {
+  padding: 1em;
+}
+/*# sourceMappingURL=include.css.map */

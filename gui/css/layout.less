@@ -1,8 +1,14 @@
 :root, html, body {
   font-family: var(--ui-font);
-  font-size: 12px;
+  font-size: 14px;
 
   user-select: none;
+
+  box-sizing: border-box;
+
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
 }
 
 templates {
@@ -37,11 +43,65 @@ root {
 
 /* UI Components */
 
+input, button, label {
+  font-family: var(--input-font);
+
+  display: block;
+  width: 100%;
+
+  margin-bottom: 0.5em;
+  padding: 0.5em;
+
+  border-radius: 2px;
+  border: none;
+  outline: none;
+
+  &[disabled] {
+    cursor: not-allowed;
+  }
+}
+
+label {
+  margin-bottom: 0;
+}
+
+input {
+  color: var(--input-color);
+  background: var(--input-bg);
+
+  &:invalid {
+    outline: 2px solid red;
+  }
+
+  &:hover:not([disabled]) {
+    background: var(--input-bg-hover);
+  }
+
+  &[disabled] {
+    color: var(--input-color-disabled);
+  }
+}
+
+button {
+  color: var(--button-color);
+  background: var(--button-bg);
+
+  cursor: pointer;
+
+  &:hover:not([disabled]) {
+    background: var(--button-bg-hover);
+  }
+
+  &[disabled] {
+    color: var(--button-color-disabled);
+  }
+}
+
 .pane {
   font-size: 1rem;
 
   color: var(--pane-color);
-  background-color: var(--pane-bg);
+  background: var(--pane-bg);
   box-shadow: var(--pane-box-shadow);
 
   padding: 1em;
@@ -49,14 +109,32 @@ root {
   &.no-padding {
     padding: 0;
   }
+
+  divider {
+    display: block;
+    width: 100%;
+    height: 2px;
+
+    background: #000000;
+
+    border-top: 1px solid #2f3138;
+  }
 }
 
 /* Helpers */
 
 ui-layer {
+  pointer-events: none;
+
+  & .pane {
+    pointer-events: auto;
+  }
+
   & > .fill-screen {
     width: 100%;
     height: 100%;
+
+    background: transparent;
   }
 }
 

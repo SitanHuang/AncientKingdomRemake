@@ -1,0 +1,35 @@
+.template-map-editor {
+  &:extend(ui-layer > .fill-screen);
+
+  font-size: 1rem;
+
+  display: block;
+  position: relative;
+
+  .left-pane {
+    &:extend(.pane.no-padding);
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: max(20em, 30%);
+    height: 100%;
+
+    overflow: auto;
+
+    item {
+      &:extend(.template-start-menu .pane item);
+
+      border: none;
+
+      &:hover {
+        &:extend(.template-start-menu .pane item:hover);
+      }
+    }
+
+    form {
+      padding: 1em;
+    }
+  }
+}

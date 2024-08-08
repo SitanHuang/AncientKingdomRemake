@@ -1,10 +1,24 @@
 :root {
-  --ui-font: 'Times New Roman', serif;
+  --ui-font: Arial, Helvetica, sans-serif;
+  --input-font: var(--ui-font);
 
   --pane-color: white;
   --pane-bg: #171a21;
   --pane-box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.75);
+
+  --input-color: white;
+  --input-color-disabled: rgba(255, 255, 255, 0.7);
+  --input-bg: #32353c;
+  --input-bg-hover: #393c44;
+
+  --button-color: var(--input-color);
+  --button-color-disabled: var(--input-color-disabled);
+  --button-bg: var(--input-bg);
+  --button-bg-hover: var(--input-bg-hover);
+  --button-border: 1px solid rgba(255, 255, 255, 0.12);
+  --button-box-shadow: 1px 1px 1px rgba(255, 255, 255, .1);
 }
 
 @import url(./layout.less);
 @import url(./startMenu.less);
+@import url(./mapEditor.less);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AKR</title>
 
   <!-- Core: Includes -->
@@ -19,14 +19,18 @@
   <script src="gui/ext/pixi.min.js"></script>
 
   <!-- UI: Includes -->
+  <script src="gui/constants.js"></script>
   <script src="gui/env.js"></script>
   <script src="gui/state.js"></script>
+  <script src="gui/graphics/smoothing.js"></script>
+  <script src="gui/graphics/viewport.js"></script>
+  <script src="gui/graphics/renderers/renderer.js"></script>
 
   <!-- UI: Dependencies -->
+  <script src="gui/graphics/renderers/viewportTestRenderer.js"></script>
+  <script src="gui/graphics/renderers/mapEditorRenderer.js"></script>
   <script src="gui/states/startMenu.js"></script>
   <script src="gui/states/mapEditor.js"></script>
-
-  <script src="gui/ext/less.min.js"></script>
 
   <link rel="stylesheet" href="gui/include.css">
 </head>
@@ -49,6 +53,22 @@
         <item>
           Exit
         </item>
+      </div>
+    </div>
+    <div class="template-map-editor">
+      <div class="pane left-pane">
+        <item>
+          ← Exit
+        </item>
+        <divider></divider>
+        <form>
+          <label>Width</label>
+          <input type="number" min="1" step="1" max="255" required autocomplete="off" value="50">
+          <label>Height</label>
+          <input type="number" min="1" step="1" max="255" required autocomplete="off" value="50">
+          <button type="submit">Create Blank Map</button>
+        </form>
+        <pre id="console"></pre>
       </div>
     </div>
   </templates>

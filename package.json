@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "jest",
-    "watch-less": "less-watch-compiler gui/css gui include.less"
+    "watch-less": "less-watch-compiler gui/css gui include.less --source-map"
   },
   "author": "Sitan Huang",
   "devDependencies": {
