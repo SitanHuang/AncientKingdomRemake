@@ -14,15 +14,43 @@
 
   <!-- ### Copy head from index.html ### -->
 
-  <!-- Core Library: Includes -->
+  <!-- Core: External -->
+  <script src="../../core/ext/js-sdsl.min.js"></script>
+  <script src="../../core/ext/logger.min.js"></script>
+
+  <!-- Core: Includes -->
   <script src="../../core/obj/enums.js"></script>
-  <!-- Core Library: Dependencies -->
+
+  <!-- Core: Dependencies -->
   <script src="../../core/obj/map/map.js"></script>
   <script src="../../core/obj/map/terrain.js"></script>
   <script src="../../core/obj/map/tile.js"></script>
 
+  <!-- UI: External -->
+  <script src="../../gui/ext/jquery-3.7.1.min.js"></script>
+  <script src="../../gui/ext/pixi.min.js"></script>
+
+  <!-- UI: Includes -->
+  <script src="../../gui/constants.js"></script>
+  <script src="../../gui/env.js"></script>
+  <script src="../../gui/state.js"></script>
+  <script src="../../gui/graphics/utils.js"></script>
+  <script src="../../gui/graphics/config.js"></script>
+  <script src="../../gui/graphics/cacheManager.js"></script>
+  <script src="../../gui/graphics/smoothing.js"></script>
+  <script src="../../gui/graphics/viewport.js"></script>
+  <script src="../../gui/graphics/renderers/renderer.js"></script>
+  <script src="../../gui/graphics/layers/layer.js"></script>
+
+  <!-- UI: Dependencies -->
+  <script src="../../gui/graphics/layers/map/mapLayer.js"></script>
+  <script src="../../gui/graphics/renderers/mapEditorRenderer.js"></script>
+  <script src="../../gui/states/startMenu.js"></script>
+  <script src="../../gui/states/mapEditor.js"></script>
+
   <!-- ### Specs ### -->
   <script src="../spec/obj.map.test.js"></script>
+  <script src="../spec/gui.graphics.cachemanager.test.js"></script>
 
 </head>
 

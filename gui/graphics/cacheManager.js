@@ -29,6 +29,7 @@ class CacheManager {
 
     this.config = Object.assign({
       name: "gui.graphics.cachemanager",
+      dirtyQueuePruneThre: 50,
     }, config);
 
     this.log = Logger.get(this.config.name);
@@ -36,12 +37,25 @@ class CacheManager {
 
   getFreshObj(...keys) {
     const con = this.#getContainerMap(keys, true, true);
-    const obj = con?.get(CacheManager.SYM_SELF);
+    const obj = con.get(CacheManager.SYM_SELF);
 
     if (con?.get(CacheManager.SYM_DIRTY))
       throw new Error(`accessing a dirty object: ${keys}`);
 
     return obj || null;
+  }
+
+  getFreshObjOrReplace(replaceFunc, ...keys) {
+    const con = this.#getContainerMap(keys, true, false);
+    let obj = con.get(CacheManager.SYM_SELF) || null;
+
+    if (!obj || con.get(CacheManager.SYM_DIRTY)) {
+      obj = replaceFunc(obj);
+      con.set(CacheManager.SYM_SELF, obj);
+      con.set(CacheManager.SYM_DIRTY, false);
+    }
+
+    return obj;
   }
 
   getObjForce(...keys) {
@@ -54,7 +68,7 @@ class CacheManager {
   /**
    * refreshes all dirty objects by traversing recusively the dirty Maps
    *
-   * @param {function} callback the async callback func to receive each dirty obj
+   * @param {function} callback the async callback func to receive each dirty obj; optionally returns replacement object
    */
   async refreshDirtyObjsAsync(refreshFunc = async function (_keys, _obj) {}, ...targetKeysPrefix) {
     const timeLabel = "refreshDirtyObjsAsync, queue size=" + this.dirtyQueue.length;
@@ -70,24 +84,17 @@ class CacheManager {
       if (!map.get(CacheManager.SYM_DIRTY))
         continue;
 
-      if (map.has(CacheManager.SYM_SELF))
-        await refreshFunc(keys, map.get(CacheManager.SYM_SELF));
+      if (map.has(CacheManager.SYM_SELF)) {
+        const result = await refreshFunc(keys, map.get(CacheManager.SYM_SELF));
+        if (typeof result != 'undefined')
+          map.set(CacheManager.SYM_SELF, result);
+      }
 
       map.set(CacheManager.SYM_DIRTY, false);
-
-      map.forEach((val, key) => {
-        if (key === CacheManager.SYM_DIRTY ||
-          key === CacheManager.SYM_KEYS ||
-          key === CacheManager.SYM_SELF ||
-          key === CacheManager.SYM_PARENT_MAP ||
-          !(val instanceof Map))
-          return;
-
-        this.dirtyQueue.push(val);
-      });
     }
 
-    this.dirtyQueue = this.dirtyQueue.filter(x => x.get(CacheManager.SYM_DIRTY));
+    if (this.dirtyQueue.length > (this.config.dirtyQueuePruneThre || 50))
+      this.dirtyQueue = this.dirtyQueue.filter(x => x.get(CacheManager.SYM_DIRTY));
 
     this.log.timeEnd(timeLabel);
 
@@ -102,22 +109,54 @@ class CacheManager {
     return this;
   }
 
-  setFreshKey(...keys) {
-    this.#getContainerMap(keys, true)
-      .set(CacheManager.SYM_DIRTY, false);
-
-    return this;
-  }
-
-  setDirty(...keys) {
-    // set entire map as dirty
+  addDirtyObj(obj, ...keys) {
     this.dirtyQueue.push(
       this.#getContainerMap(keys, true)
+        .set(CacheManager.SYM_SELF, obj)
         .set(CacheManager.SYM_DIRTY, true)
     );
 
     return this;
   }
+
+  setFreshKey(...keys) {
+    this.#getContainerMap(keys, true, false)
+      .set(CacheManager.SYM_DIRTY, false);
+
+    return this;
+  }
+
+  isDirty(...keys) {
+    return !!this.#getContainerMap(keys, true, false)
+      .get(CacheManager.SYM_DIRTY);
+  }
+
+  setDirty(...keys) {
+    const parent = this.#getContainerMap(keys, true);
+
+    const stack = [parent];
+
+    while (stack.length) {
+      const parent = stack.pop();
+
+      parent.set(CacheManager.SYM_DIRTY, true);
+      this.dirtyQueue.push(parent);
+
+      parent.forEach((val, key) => {
+        if (key === CacheManager.SYM_DIRTY ||
+          key === CacheManager.SYM_KEYS ||
+          key === CacheManager.SYM_SELF ||
+          key === CacheManager.SYM_PARENT_MAP ||
+          !(val instanceof Map))
+          return;
+
+        stack.push(val);
+      });
+    }
+
+    return this;
+  }
+
 
   deleteContainer(...keys) {
     this.#removeFromDirtyQueue(keys);

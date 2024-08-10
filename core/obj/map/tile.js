@@ -31,7 +31,7 @@ function tile_create({ row, col }) {
     //   // [resourceEnum]: amount
     // },
 
-    ter: SYM_TER_DEFAULT, // type
+    ter: KEY_TER_DEFAULT, // type
     terAux: {}, // terrain aux mods
 
     owner: 0, // playerID (0 = none)

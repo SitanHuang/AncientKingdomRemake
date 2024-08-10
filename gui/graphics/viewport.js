@@ -32,12 +32,13 @@ class Viewport {
     this.renderer = renderer;
     this.domElement = renderer.containerElement;
 
-    this.viewportWidth = viewportWidth || this.domElement.offsetX;
-    this.viewportHeight = viewportHeight || this.domElement.offsetY;
+    this.viewportWidth = viewportWidth || this.domElement.canvasX;
+    this.viewportHeight = viewportHeight || this.domElement.canvasY;
 
     this.minPanThreshold = minPanThreshold || 5;
 
     this.container = new PIXI.Container();
+    this.container.label = "Viewport";
 
     // PIXI bubbles events like DOM: child first
     this.container.eventMode = 'static';
@@ -53,7 +54,7 @@ class Viewport {
         this.#wheelTarget.target
       );
 
-      this.applyZoom([this.#wheelTarget.event.offsetX, this.#wheelTarget.event.offsetY]);
+      this.applyZoom([this.#wheelTarget.event.canvasX, this.#wheelTarget.event.canvasY]);
 
       if (this.#wheelSmoother.isStopped)
         this.#wheelTarget = null;
@@ -90,7 +91,7 @@ class Viewport {
   }
 
   wheelHandler = (event) => {
-    // TODO: should apply smoothing
+    calcOffsetCoors(event);
     event.preventDefault();
 
     const step = 1 - event.deltaY / 200;
@@ -104,6 +105,7 @@ class Viewport {
   }
 
   pointerDownHandler = (event) => {
+    calcOffsetCoors(event);
     this.#pointersDown.push(event);
 
     // start/restart pinching on last 2 pointers
@@ -131,6 +133,8 @@ class Viewport {
     if (index == -1)
       return;
 
+    calcOffsetCoors(event);
+
     const oldEvent = this.#pointersDown[index];
 
     if (this.#pinchInProgress && this.#pointersDown.length >= 2) {
@@ -155,8 +159,8 @@ class Viewport {
     } else if (oldEvent) {
       // detect pan
       const diff = [
-        event.offsetX - oldEvent.offsetX,
-        event.offsetY - oldEvent.offsetY
+        event.canvasX - oldEvent.canvasX,
+        event.canvasY - oldEvent.canvasY
       ];
 
       if (!this.#panInProgress && Math.sqrt(
@@ -172,8 +176,8 @@ class Viewport {
         event._maskEvents = true;
 
         this.pan([
-          event.offsetX - oldEvent.offsetX,
-          event.offsetY - oldEvent.offsetY
+          event.canvasX - oldEvent.canvasX,
+          event.canvasY - oldEvent.canvasY
         ]);
       }
     }
@@ -190,9 +194,9 @@ class Viewport {
     this.#zoom = Math.max(0.05, Math.min(50, zoom));
   }
 
-  pan([offsetX, offsetY]) {
-    this.container.x += offsetX;
-    this.container.y += offsetY;
+  pan([canvasX, canvasY]) {
+    this.container.x += canvasX;
+    this.container.y += canvasY;
   }
 
   pinchFrom(zoomFactor, pt) {
@@ -213,6 +217,8 @@ class Viewport {
   }
 
   pointerUpHandler = (event) => {
+    calcOffsetCoors(event);
+
     // remove event from pointersDown list
     const index = this.#pointersDown.findIndex(
       x => x.pointerId === event.pointerId,
@@ -236,14 +242,14 @@ class Viewport {
 
   static #pointerEventsDist(e1, e2, min=0.1) {
     return Math.max(min, Math.sqrt(
-      Math.pow(e1.offsetX - e2.offsetX, 2) +
-      Math.pow(e1.offsetY - e2.offsetY, 2)
+      Math.pow(e1.canvasX - e2.canvasX, 2) +
+      Math.pow(e1.canvasY - e2.canvasY, 2)
     ));
   }
   static #pointerEventsCenter(e1, e2) {
     return [
-      (e1.offsetX + e2.offsetX) / 2,
-      (e1.offsetY + e2.offsetY) / 2,
+      (e1.canvasX + e2.canvasX) / 2,
+      (e1.canvasY + e2.canvasY) / 2,
     ]
   }
 }

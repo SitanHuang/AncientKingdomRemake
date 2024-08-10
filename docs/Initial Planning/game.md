@@ -23,6 +23,8 @@
 
 - all user actions must be dedicated API calls
 - all runtime API calls should be async
+- API is responsible for returning feedback on changed map data
+  - allows lazy update of graphics components
 
 # Design
 
@@ -107,7 +109,8 @@ Units:
 - buildings created by adding a 0 HP building
 
 - each building has:
-  - HP: if <0, deleted; if >0, effectiveness decreases
+  - HP: if <0%, deleted; if >0%, effectiveness decreases
+  - HP has actual health points that vary by building
   - each turn, HP is increased by consuming production
   - damage order: only the building with highest order takes damage and gets
     deleted first
@@ -127,10 +130,11 @@ Units:
 - can be split/combined/disbanded
 - attacks adjacent tiles only; if tile has no stationed troops, then just walk
   in; when others are below 30% in strength compared to at start of round,
-  retreat
+  retreat; tile pop takes equal damage as military casualties (until reaching
+  0); buildings take proportional HP damage
 
-- recruited only manually from provincial/national capitals
-  - starting at 150%, draws population from capital, decreases radially outward
+- recruited anywhere, max once per tile
+  - starting at 150%, draws population from tile, decreases radially outward
     until recruit target is met (check pop first)
 - pop is returned on disband to provincial/national capital
 

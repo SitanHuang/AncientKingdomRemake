@@ -62,7 +62,7 @@ describe('map', function () {
 
       for (let r = 0; r < 239; r++) {
         for (let c = 0; c < 111; c++) {
-          expect(map.tiles[r][c].ter).toEqual(SYM_TER_DEFAULT);
+          expect(map.tiles[r][c].ter).toEqual(KEY_TER_DEFAULT);
         }
       }
     });

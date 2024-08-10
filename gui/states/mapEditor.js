@@ -5,6 +5,15 @@
 
   let $mapEditor;
 
+  let mapObj; // the actual map we're working with
+
+  function createMapObj() {
+    mapObj = map_create({
+      width: parseInt($mapEditor.find('input[name="width"]').val()),
+      height: parseInt($mapEditor.find('input[name="height"]').val()),
+    });
+  }
+
   await gui_state_register("mapEditor", {
     async init() {
       $mapEditor = gui_get$Template('template-map-editor').clone();
@@ -22,6 +31,7 @@
         if (!$form[0].checkValidity())
           return false;
 
+        createMapObj();
         gui_state_dispatchEvent("beginCanvas");
       });
 
@@ -35,12 +45,14 @@
         await state.renderer.cleanup();
 
       state.renderer =
-        window.renderer = renderer = new ViewportTestRenderer($canvasContainer[0]);
+        window.renderer = renderer = new MapEditorRenderer($canvasContainer[0]);
 
-      await renderer.begin();
+      await renderer.init();
+      await renderer.begin({ mapObj });
     },
 
     async cleanup() {
+      await renderer.cleanup();
       $uiLayer.html('');
     },
 
