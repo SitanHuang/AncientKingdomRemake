@@ -38,6 +38,7 @@ class Viewport {
     this.minPanThreshold = minPanThreshold || 5;
 
     this.container = new PIXI.Container();
+    this.container.sortableChildren = true;
     this.container.label = "Viewport";
 
     // PIXI bubbles events like DOM: child first
@@ -88,6 +89,9 @@ class Viewport {
 
   addChild(child) {
     this.container.addChild(child);
+  }
+  removeChild(child) {
+    this.container.removeChild(child);
   }
 
   wheelHandler = (event) => {

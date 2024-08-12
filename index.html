@@ -73,12 +73,25 @@
         <divider></divider>
         <form>
           <label>Width</label>
-          <input type="number" min="1" step="1" max="255" required value="50" name="width">
+          <input type="number" min="1" step="1" max="255" required value="75" name="width">
           <label>Height</label>
           <input type="number" min="1" step="1" max="255" required value="50" name="height">
           <button type="submit">Create Blank Map</button>
         </form>
-        <pre id="console"></pre>
+        <div class="controls">
+          <divider></divider>
+          <label>Image URL</label>
+          <input type="text" name="imgURL" value="https://upload.wikimedia.org/wikipedia/commons/7/7b/China_topography_full_res.jpg">
+          <label>OffsetX</label>
+          <input type="number" step="1" required value="-200" name="offsetX">
+          <label>OffsetY</label>
+          <input type="number" step="1" required value="-800" name="offsetY">
+          <label>Scale</label>
+          <input type="number" min="0.01" step="0.01" max="10" required value="1.7" name="scale">
+          <label>Alpha</label>
+          <input type="number" min="0.00" step="0.01" max="1" required value="0.5" name="alpha">
+          <button type="button" class="insert-bg-btn">Insert/Update Img Guide</button>
+        </div>
       </div>
     </div>
   </templates>

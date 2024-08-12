@@ -58,6 +58,19 @@ class CacheManager {
     return obj;
   }
 
+  async getFreshObjOrReplaceAsync(replaceFunc, ...keys) {
+    const con = this.#getContainerMap(keys, true, false);
+    let obj = con.get(CacheManager.SYM_SELF) || null;
+
+    if (!obj || con.get(CacheManager.SYM_DIRTY)) {
+      obj = await replaceFunc(obj);
+      con.set(CacheManager.SYM_SELF, obj);
+      con.set(CacheManager.SYM_DIRTY, false);
+    }
+
+    return obj;
+  }
+
   getObjForce(...keys) {
     const con = this.#getContainerMap(keys, true, true);
     const obj = con?.get(CacheManager.SYM_SELF);

@@ -4,6 +4,7 @@
   let renderer;
 
   let $mapEditor;
+  let $controls;
 
   let mapObj; // the actual map we're working with
 
@@ -35,6 +36,9 @@
         gui_state_dispatchEvent("beginCanvas");
       });
 
+      $controls = $mapEditor.find('div.controls');
+      $controls.hide();
+
       $uiLayer.append($mapEditor);
     },
 
@@ -49,6 +53,16 @@
 
       await renderer.init();
       await renderer.begin({ mapObj });
+
+      $controls.show().find('button.insert-bg-btn')[0].onclick = () => {
+        const imgURL = $controls.find('input[name="imgURL"]').val();
+        const offsetX = parseFloat($controls.find('input[name="offsetX"]').val()) || 0;
+        const offsetY = parseFloat($controls.find('input[name="offsetY"]').val()) || 0;
+        const scale = parseFloat($controls.find('input[name="scale"]').val()) || 1;
+        const alpha = parseFloat($controls.find('input[name="alpha"]').val()) || 0.00;
+
+        gui_state_dispatchEvent("onInsertBGImg", { imgURL, offsetX, offsetY, scale, alpha });
+      };
     },
 
     async cleanup() {
@@ -57,6 +71,30 @@
     },
 
     async onMapEditorClick() {
-    }
+    },
+
+    async onInsertBGImg({ imgURL, offsetX, offsetY, scale, alpha }) {
+      renderer.cacheManager.setDirty("mapEditor", "bgImg");
+      await renderer.cacheManager.getFreshObjOrReplaceAsync(async (orig) => {
+        if (orig) {
+          renderer.viewport.removeChild(orig);
+          orig.destroy(true);
+        }
+
+        orig = PIXI.Sprite.from(await PIXI.Assets.load(imgURL));
+
+        renderer.viewport.addChild(orig);
+
+        orig.label = 'bgImg';
+        orig.x = offsetX;
+        orig.y = offsetY;
+        orig.scale = scale;
+        orig.alpha = alpha;
+        orig.zIndex = 999999;
+        orig.eventMode = 'none';
+
+        return orig;
+      }, "mapEditor", "bgImg");
+    },
   });
 })();

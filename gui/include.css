@@ -188,7 +188,8 @@ ui-layer > .fill-screen,
 .template-map-editor .left-pane item {
   border: none;
 }
-.template-map-editor .left-pane form {
+.template-map-editor .left-pane form,
+.template-map-editor .left-pane .controls {
   padding: 1em;
 }
 /*# sourceMappingURL=include.css.map */
