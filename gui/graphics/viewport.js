@@ -191,7 +191,7 @@ class Viewport {
     return this.#zoom;
   }
   set zoom(zoom) {
-    this.#zoom = Math.max(0.05, Math.min(50, zoom));
+    this.#zoom = Math.max(0.05, Math.min(2, zoom));
   }
 
   pan([canvasX, canvasY]) {

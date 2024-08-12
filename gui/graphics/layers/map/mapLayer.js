@@ -1,3 +1,6 @@
+/**
+ * The MapLayer manages rendering of a FIXED SIZE map (though tiles can change)
+ */
 class MapLayer extends Layer {
   static ZINDEX_BG = 1;
   static ZINDEX_TILELAYER = 10;
