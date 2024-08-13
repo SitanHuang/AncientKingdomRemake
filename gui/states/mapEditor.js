@@ -4,6 +4,7 @@
   let renderer;
 
   let $mapEditor;
+  let $form;
   let $controls;
 
   let mapObj; // the actual map we're working with
@@ -19,7 +20,7 @@
     async init() {
       $mapEditor = gui_get$Template('template-map-editor').clone();
 
-      let $form = $mapEditor.find('.left-pane form');
+      $form = $mapEditor.find('.left-pane form');
       let $submit = $form.find('button');
 
       $form.find('input').on('input', function(e) {
@@ -34,12 +35,28 @@
 
         createMapObj();
         gui_state_dispatchEvent("beginCanvas");
+
+        $form.hide();
       });
 
       $controls = $mapEditor.find('div.controls');
       $controls.hide();
 
       $uiLayer.append($mapEditor);
+    },
+
+    async onLoadMap() {
+      mapObj = await fs_prompt_load_obj();
+
+      gui_state_dispatchEvent("beginCanvas");
+      $form.hide();
+    },
+
+    async onSaveMap() {
+      if (!mapObj)
+        return;
+
+      await fs_prompt_serialize_obj(mapObj, { fname: "map" });
     },
 
     async beginCanvas() {
@@ -49,7 +66,7 @@
         await state.renderer.cleanup();
 
       state.renderer =
-        window.renderer = renderer = new MapEditorRenderer($canvasContainer[0]);
+        window.renderer = renderer = new MapRenderer($canvasContainer[0]);
 
       await renderer.init();
       await renderer.begin({ mapObj });
@@ -66,20 +83,64 @@
     },
 
     async cleanup() {
-      await renderer.cleanup();
+      const state = await gui_state_getStore();
+
+      if (renderer) {
+        await renderer.cleanup();
+        window.renderer = renderer = state.renderer = null;
+      }
       $uiLayer.html('');
     },
 
-    async onMapEditorClick() {
+    async onBrushSelect({ btn, terrain }) {
+      const $btn = $(btn);
+
+      if ($btn.hasClass("active")) {
+        renderer.viewport.endBrush();
+
+        $controls.find('button.brush').removeClass('active');
+
+        return;
+      }
+
+      $controls.find('button.brush').removeClass('active');
+
+      $btn.addClass("active");
+
+      renderer.viewport.registerOnBrush("mapEditorBrush", (pt) => {
+        const coor = renderer.mapLayer.calcMapCoorFromPIXIPt(pt);
+
+        if (!coor)
+          return;
+
+        if (terrain === null) {
+          map_del(mapObj, coor);
+        } else {
+          const tile = tile_create({
+            row: coor[0],
+            col: coor[1],
+            ter: terrain,
+          })
+          map_set(mapObj, coor, tile);
+
+          if (terrain == KEY_TER_RIVER)
+            tile_river_calc_graphic_type(mapObj, tile, true, (tile) => {
+              renderer.mapLayer.setTileAsDirty([tile.row, tile.col]);
+          });
+        }
+
+        renderer.mapLayer.setTileAsDirty(coor);
+        renderer.updateMapLayer(); // async
+      });
+
+      renderer.viewport.beginBrush();
     },
 
     async onInsertBGImg({ imgURL, offsetX, offsetY, scale, alpha }) {
       renderer.cacheManager.setDirty("mapEditor", "bgImg");
       await renderer.cacheManager.getFreshObjOrReplaceAsync(async (orig) => {
-        if (orig) {
-          renderer.viewport.removeChild(orig);
+        if (orig)
           orig.destroy(true);
-        }
 
         orig = PIXI.Sprite.from(await PIXI.Assets.load(imgURL));
 

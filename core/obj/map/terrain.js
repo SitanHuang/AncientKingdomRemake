@@ -55,6 +55,14 @@ const TERRAIN_MOD_OBJS = {
     speed: 0.3,
     attrition: 0.93,
   },
+  [KEY_TER_MOUNTAIN2]: {
+    pop: 0.1,
+    econ: 0.3,
+    upkeep: 2,
+    defence: 3,
+    speed: 0.1,
+    attrition: 0.85,
+  },
 };
 
 function terrain_modObj(key) {

@@ -3,6 +3,9 @@
  * everything other than the environment (e.g., civs, cultures, ...)
  */
 function map_create({ width, height }) {
+  if (width > MAP_MAX_LENGTH || height > MAP_MAX_LENGTH)
+    throw new Error(`Map dimension (${width} x ${height}) cannot be greater than MAP_MAX_LENGTH=${MAP_MAX_LENGTH}`);
+
   const map = {
     /**
      * Tiles are a 2-D array with nullable elements
@@ -50,6 +53,18 @@ function map_del(map, [row, col]) {
     throw `Cannot delete tile at undefined ([${row}, ${col}])!`;
 
   map.tiles[row][col] = null;
+}
+
+/**
+ * Iterates neighbors instantly (without using cache)
+ */
+function map_instant_neighbors(map, [r, c], callback) {
+  let tmp;
+
+  (tmp = map_at(map, [r - 1, c])) && callback(tmp);
+  (tmp = map_at(map, [r + 1, c])) && callback(tmp);
+  (tmp = map_at(map, [r, c - 1])) && callback(tmp);
+  (tmp = map_at(map, [r, c + 1])) && callback(tmp);
 }
 
 /**

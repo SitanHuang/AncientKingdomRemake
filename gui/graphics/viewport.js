@@ -9,8 +9,12 @@ class Viewport {
 
   minPanThreshold;
 
+  #onHoverCallbacks = new Map();
+  #onBrushCallbacks = new Map();
+
   #pointersDown = [];
 
+  #brushInProgress = false;
   #pinchInProgress = false;
   #panInProgress = false;
   #pinchDistLast; // enables pinch zoom
@@ -94,6 +98,27 @@ class Viewport {
     this.container.removeChild(child);
   }
 
+  registerOnHover(id, callback) {
+    this.#onHoverCallbacks.set(id, callback);
+  }
+  registerOnBrush(id, callback) {
+    this.#onBrushCallbacks.set(id, callback);
+  }
+  removeOnHover(id) {
+    this.#onHoverCallbacks.delete(id);
+  }
+  removeOnBrush(id) {
+    this.#onBrushCallbacks.delete(id);
+  }
+
+  beginBrush() {
+    this.#brushInProgress = true;
+  }
+  endBrush() {
+    this.#brushInProgress = false;
+    this.#pointersDown = [];
+  }
+
   wheelHandler = (event) => {
     calcOffsetCoors(event);
     event.preventDefault();
@@ -129,15 +154,32 @@ class Viewport {
   }
 
   pointerMoveHandler = (event) => {
+    calcOffsetCoors(event);
+
     // Find this event in the cache and update its record with this event
     const index = this.#pointersDown.findIndex(
       (x) => x.pointerId === event.pointerId,
     );
 
-    if (index == -1)
-      return;
+    if (index == -1) {
+      // hover only, didn't previously touch down
 
-    calcOffsetCoors(event);
+      this.#onHoverCallbacks.forEach((callback) => {
+        callback(this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)));
+      });
+
+      return;
+    }
+
+    if (this.#brushInProgress) {
+      // previously touched down (index != -1)
+
+      this.#onBrushCallbacks.forEach((callback) => {
+        callback(this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)));
+      });
+
+      return;
+    }
 
     const oldEvent = this.#pointersDown[index];
 
@@ -209,7 +251,7 @@ class Viewport {
     this.applyZoom(pt);
   }
 
-  applyZoom([x, y]) {
+  applyZoom([x, y]=[0, 0]) {
     const screenCoor = new PIXI.Point(x, y);
     const oldPoint = this.container.toLocal(screenCoor);
 
@@ -233,8 +275,9 @@ class Viewport {
     const oldEvent = index == -1 ? null : this.#pointersDown.splice(index, 1)[0];
 
     if (
-      oldEvent &&
-      this.#pointersDown.findIndex(x => x._maskEvents) == -1
+      (oldEvent &&
+      this.#pointersDown.findIndex(x => x._maskEvents) == -1) ||
+      (!this.#pinchInProgress && !this.#panInProgress && !this.#brushInProgress)
     ) {
       // hand over interactivity back to children
       this.container.eventMode = 'passive';

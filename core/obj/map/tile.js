@@ -1,11 +1,13 @@
-function tile_create({ row, col }) {
+function tile_create(override) {
+  const { row, col } = override;
+
   const tile = {
     _pop: 0, // TODO: change to cultures; for now this should not be accessed directly
 
     row: row,
     col: col,
 
-    id: row + ',' + col,
+    id: tile_id_from_pt(row, col),
 
     // pop: {
     //   // [cultureID]: pop
@@ -46,11 +48,48 @@ function tile_create({ row, col }) {
     },
   };
 
-  return tile;
+  return Object.assign(tile, override);
+}
+
+function tile_river_calc_graphic_type(map, tile, propagate=true, dirtyFunc) {
+  if (tile.ter != KEY_TER_RIVER) {
+    delete tile.terAux.riverGType;
+    return;
+  }
+
+  tile.terAux.riverGType = 0b0000; // top, right, bottom, left
+
+  if (dirtyFunc)
+    dirtyFunc(tile);
+
+  map_instant_neighbors(map, [tile.row, tile.col], (tile2) => {
+    if (tile2.ter != KEY_TER_RIVER)
+      return;
+
+    if (propagate)
+      tile_river_calc_graphic_type(map, tile2, false, dirtyFunc);
+
+    tile.terAux.riverGType = tile.terAux.riverGType | (
+      (tile2.row < tile.row && 0b1000) ||
+      (tile2.row > tile.row && 0b0010) ||
+      (tile2.col < tile.col && 0b0001) ||
+      (tile2.col > tile.col && 0b0100)
+    );
+  });
 }
 
 function tile_id(tile) {
   return tile.id;
+}
+
+function tile_id_from_pt(row, col) {
+  return row * MAP_MAX_LENGTH + col;
+}
+
+function tile_pt_from_id(id) {
+  const row = Math.floor(id / MAP_MAX_LENGTH);
+  const col = id % MAP_MAX_LENGTH;
+  return [ row, col ];
 }
 
 function tile_terrainMod(tile) {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100"
+   height="100"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="ter_hill.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#000000"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="7.09"
+     inkscape:cx="49.858956"
+     inkscape:cy="49.929478"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs1" />
+  <path
+     style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.67798;stroke-linecap:butt;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-opacity:1"
+     d="m 21.690699,73.724727 c 6.984658,-7.487579 16.587337,-13.055322 26.962586,-13.643168 9.849379,-0.607583 19.311214,3.941553 26.580323,10.310622 1.238376,1.063785 2.432911,2.178241 3.587257,3.332546"
+     id="path3" />
+  <circle
+     style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.52482;stroke-linecap:butt;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-opacity:1"
+     id="path4"
+     cx="21.727461"
+     cy="73.673126"
+     r="1.3389883" />
+  <circle
+     style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.52482;stroke-linecap:butt;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-opacity:1"
+     id="path4-4"
+     cx="78.864166"
+     cy="73.76992"
+     r="1.3389883" />
+</svg>

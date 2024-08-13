@@ -73,11 +73,44 @@ describe('map', function () {
 
     map_fill_blank(map);
 
-    it('has properties row, col, id', function () {
-      expect(tile_id(map_at(map, [0, 1]))).toEqual("0,1");
+    it('has properties row, col', function () {
       expect(map_at(map, [0, 1]).row).toEqual(0);
       expect(map_at(map, [0, 1]).col).toEqual(1);
     });
-  })
+
+    describe("Tile ID Conversions", function () {
+      it("converts between points and IDs", function () {
+        let row = 50;
+        let col = 50;
+        let id = tile_id_from_pt(row, col);
+        expect(id).toEqual(50 * MAP_MAX_LENGTH + 50);
+        let [recoveredRow, recoveredCol] = tile_pt_from_id(id);
+        expect(recoveredRow).toEqual(row);
+        expect(recoveredCol).toEqual(col);
+
+        row = 0;
+        col = 0;
+        id = tile_id_from_pt(row, col);
+        expect(id).toEqual(0);
+        [recoveredRow, recoveredCol] = tile_pt_from_id(id);
+        expect(recoveredRow).toEqual(row);
+        expect(recoveredCol).toEqual(col);
+      });
+
+      it("reversibility for multiple points", function () {
+        for (let row = 0; row < MAP_MAX_LENGTH; row++) {
+          for (let col = 0; col < MAP_MAX_LENGTH; col++) {
+            const id = tile_id_from_pt(row, col);
+            const tile = tile_create({ row, col })
+            expect(tile_id(tile)).toEqual(id);
+            expect(tile.id).toEqual(id);
+            const [recoveredRow, recoveredCol] = tile_pt_from_id(id);
+            expect(recoveredRow).toEqual(row);
+            expect(recoveredCol).toEqual(col);
+          }
+        }
+      });
+    });
+  });
 
 });

@@ -7,10 +7,12 @@
   },
   "scripts": {
     "test": "jest",
-    "watch-less": "less-watch-compiler gui/css gui include.less --source-map"
+    "watch-less": "less-watch-compiler gui/css gui include.less --source-map",
+    "server": "http-server ./"
   },
   "author": "Sitan Huang",
   "devDependencies": {
+    "http-server": "^14.1.1",
     "jasmine": "^5.2.0",
     "jasmine-browser-runner": "^2.5.0",
     "jasmine-core": "^5.2.0",

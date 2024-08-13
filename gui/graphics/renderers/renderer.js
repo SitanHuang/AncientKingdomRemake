@@ -36,7 +36,9 @@ class Renderer {
   }
 
   async init(_intent={}) {
-    const app = this.app = new PIXI.Application();
+    const app = this.app = new PIXI.Application({
+      antialias: true
+    });
     await app.init();
 
     app.resizeTo = this.containerElement;
@@ -46,7 +48,7 @@ class Renderer {
     this.ticker.add((time) => {
       this.tickerPerformUpdate(time);
     });
-    this.ticker.maxFPS = 0;
+    this.ticker.maxFPS = GLOBAL_DEBUG_FLAG ? 60 : 0;
 
     if (GLOBAL_DEBUG_FLAG) {
       this.showStats();

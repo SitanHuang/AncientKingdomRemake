@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100"
+   height="100"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   sodipodi:docname="ter_steppe.svg"
+   inkscape:export-filename="../dist/ter_desert.png"
+   inkscape:export-xdpi="192"
+   inkscape:export-ydpi="192"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#000000"
+     borderopacity="0.3"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4.0000001"
+     inkscape:cx="46.374999"
+     inkscape:cy="44.749999"
+     inkscape:document-units="px"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="false"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1"
+     labelstyle="default" />
+  <path
+     style="fill:#ffffff;stroke:#fefefe;stroke-width:2.65779114;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-linecap:round;stroke-dashoffset:0"
+     d="M 13.965359,80.786948 H 47.906483"
+     id="path3" />
+  <path
+     style="fill:#ffffff;stroke:#fefefe;stroke-width:4.0889101;stroke-linecap:round;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-dashoffset:0"
+     d="M 40.727922,60.382991 H 85.275647"
+     id="path3-5" />
+  <path
+     style="fill:#ffffff;stroke:#fefefe;stroke-width:2.65779114;stroke-linecap:round;stroke-miterlimit:3.6;stroke-dasharray:none;stroke-dashoffset:0"
+     d="M 21.636039,39.403806 H 50.627416"
+     id="path3-2" />
+</svg>

@@ -24,9 +24,13 @@
   <script src="gui/ext/stats.min.js"></script>
 
   <!-- UI: Includes -->
+
   <script src="gui/constants.js"></script>
   <script src="gui/env.js"></script>
   <script src="gui/state.js"></script>
+  <script src="gui/fs/serialize.js"></script>
+  <script src="gui/fs/save.js"></script>
+  <script src="gui/fs/load.js"></script>
   <script src="gui/graphics/utils.js"></script>
   <script src="gui/graphics/config.js"></script>
   <script src="gui/graphics/cacheManager.js"></script>
@@ -35,10 +39,13 @@
   <script src="gui/graphics/renderers/renderer.js"></script>
   <script src="gui/graphics/layers/layer.js"></script>
 
+  <script src="gui/graphics/layers/map/tileGraphics/color.js"></script>
+  <script src="gui/graphics/layers/map/tileGraphics/terrain.js"></script>
+
   <!-- UI: Dependencies -->
   <script src="gui/graphics/layers/map/tileLayer.js"></script>
   <script src="gui/graphics/layers/map/mapLayer.js"></script>
-  <script src="gui/graphics/renderers/mapEditorRenderer.js"></script>
+  <script src="gui/graphics/renderers/mapRenderer.js"></script>
   <script src="gui/states/startMenu.js"></script>
   <script src="gui/states/mapEditor.js"></script>
 
@@ -57,7 +64,7 @@
     <div class="template-start-menu">
       <div class="pane">
         <h1>AKR</h1>
-        <item onclick="gui_state_dispatchEvent('onMapEditorClick')">
+        <item onclick="gui_state_switch('mapEditor')">
           Map Editor
         </item>
         <item>
@@ -67,34 +74,54 @@
     </div>
     <div class="template-map-editor">
       <div class="pane left-pane">
-        <item>
+        <item onclick="gui_state_switch('startMenu')"">
           ← Exit
         </item>
         <divider></divider>
         <form>
+          <button type="button" onclick="gui_state_dispatchEvent('onLoadMap')">Restore From File</button>
           <label>Width</label>
-          <input type="number" min="1" step="1" max="255" required value="75" name="width">
+          <input type="number" min="1" step="1" max="255" required value="155" name="width">
           <label>Height</label>
-          <input type="number" min="1" step="1" max="255" required value="50" name="height">
-          <button type="submit">Create Blank Map</button>
+          <input type="number" min="1" step="1" max="255" required value="100" name="height">
+          <button type="submit">New Blank Map</button>
         </form>
         <div class="controls">
           <divider></divider>
+          <button type="button" onclick="gui_state_dispatchEvent('onSaveMap')">Save To File</button>
+          <divider></divider>
           <label>Image URL</label>
-          <input type="text" name="imgURL" value="https://upload.wikimedia.org/wikipedia/commons/7/7b/China_topography_full_res.jpg">
+          <input type="text" name="imgURL" value="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/China_topo.png/1024px-China_topo.png">
           <label>OffsetX</label>
-          <input type="number" step="1" required value="-200" name="offsetX">
+          <input type="number" step="1" required value="-4700" name="offsetX">
           <label>OffsetY</label>
-          <input type="number" step="1" required value="-800" name="offsetY">
+          <input type="number" step="1" required value="-4300" name="offsetY">
           <label>Scale</label>
-          <input type="number" min="0.01" step="0.01" max="10" required value="1.7" name="scale">
+          <input type="number" min="0.01" step="0.01" max="100" required value="24" name="scale">
           <label>Alpha</label>
-          <input type="number" min="0.00" step="0.01" max="1" required value="0.5" name="alpha">
+          <input type="number" min="0.00" step="0.01" max="1" required value="0.1" name="alpha">
           <button type="button" class="insert-bg-btn">Insert/Update Img Guide</button>
+          <divider></divider>
+          <label>Tile Brushes</label>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: null })">Hole</button>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: KEY_TER_PLAIN })">Plain</button>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: KEY_TER_RIVER })">River</button>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: KEY_TER_STEPPE })">Steppe</button>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: KEY_TER_DESERT })">Desert</button>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: KEY_TER_HILL })">Hill</button>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: KEY_TER_MOUNTAIN })">Mountain</button>
+          <button type="button" class="brush" onclick="gui_state_dispatchEvent('onBrushSelect', { btn: this, terrain: KEY_TER_MOUNTAIN2 })">Mountain (Extreme)</button>
         </div>
       </div>
     </div>
   </templates>
+  <assets>
+    <img src="assets/dist/ter_hill.png" id="assets-ter-hill">
+    <img src="assets/dist/ter_mountain.png" id="assets-ter-mountain">
+    <img src="assets/dist/ter_mountain2.png" id="assets-ter-mountain2">
+    <img src="assets/dist/ter_steppe.png" id="assets-ter-steppe">
+    <img src="assets/dist/ter_desert.png" id="assets-ter-desert">
+  </assets>
   <!-- Boot -->
   <script src="gui/index.js"></script>
 </body>

@@ -11,7 +11,7 @@
   }
 }
 
-templates {
+templates, assets {
   display: none;
 }
 
@@ -56,6 +56,8 @@ input, button, label {
   border: none;
   outline: none;
 
+  transition: var(--ui-component-transition);
+
   &[disabled] {
     cursor: not-allowed;
   }
@@ -86,10 +88,22 @@ button {
   color: var(--button-color);
   background: var(--button-bg);
 
+  box-shadow: var(--button-box-shadow);
+
   cursor: pointer;
 
-  &:hover:not([disabled]) {
+  &:hover:not([disabled]):not(.active):not(:active), &.hover:not(.active):not(:active) {
     background: var(--button-bg-hover);
+  }
+
+  &:active:not([disabled]), &.active {
+    color: var(--button-color-active);
+    background: var(--button-bg-active);
+    box-shadow: var(--button-box-shadow-active);
+  }
+
+  &.active:hover:not(:active) {
+    background: var(--button-bg-active-hover);
   }
 
   &[disabled] {

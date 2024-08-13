@@ -44,6 +44,13 @@ class CacheManager {
 
     return obj || null;
   }
+  getFreshObjOrNull(...keys) {
+    try {
+      return this.getFreshObj(...keys);
+    } catch (_) {
+      return null;
+    }
+  }
 
   getFreshObjOrReplace(replaceFunc, ...keys) {
     const con = this.#getContainerMap(keys, true, false);
