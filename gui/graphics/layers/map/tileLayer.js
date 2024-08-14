@@ -56,29 +56,6 @@ class TileLayer extends Layer {
 
     this.container.addChild(this.tileContainer);
 
-    this.tileContainer.on('pointerenter', () => {
-      destroyHoverOverlay();
-
-      this.hoverOverlay = new PIXI.Graphics(this.cacheManager.getFreshObjOrReplace((orig) => {
-        if (orig) {
-          orig.destroy(true);
-        }
-
-        Logger.get("gui.graphics.layers.tilelayer").warn('redrawing hoverbackdrop');
-
-        orig = new PIXI.GraphicsContext();
-        orig.rect(0, 0, this.TILE_SIZE, this.TILE_SIZE);
-        orig.fill(...this.graphicsConfig.TILE_HOVER_BG);
-
-        return orig;
-      }, this.mapLayer.mapLayerCacheKey, "tileHoverBackdrop"));
-
-      this.hoverOverlay.zIndex = TileLayer.ZINDEX_HOVER_OVERLAY;
-      this.hoverOverlay.eventMode = 'none';
-      this.tileContainer.addChild(this.hoverOverlay);
-    });
-    this.tileContainer.on('pointerleave', destroyHoverOverlay);
-
     this.tileContainer.eventMode = 'dynamic';
 
     const tileObj = map_at(this.mapLayer.mapObj, this.pt);
@@ -86,6 +63,35 @@ class TileLayer extends Layer {
     gui_graphics_tile_drawcolor(this, this.tileContainer, tileObj);
 
     await gui_graphics_tile_drawterrain(this, this.tileContainer, tileObj);
+  }
+
+  destroyHoverOverlay()  {
+    if (this.hoverOverlay) {
+      this.hoverOverlay.destroy({ context: false });
+      this.hoverOverlay = null;
+    }
+  }
+
+  createHoverOverlay() {
+    this.destroyHoverOverlay();
+
+    this.hoverOverlay = new PIXI.Graphics(this.cacheManager.getFreshObjOrReplace((orig) => {
+      if (orig) {
+        orig.destroy(true);
+      }
+
+      Logger.get("gui.graphics.layers.tilelayer").warn('redrawing hoverbackdrop');
+
+      orig = new PIXI.GraphicsContext();
+      orig.rect(0, 0, this.TILE_SIZE, this.TILE_SIZE);
+      orig.fill(...this.graphicsConfig.TILE_HOVER_BG);
+
+      return orig;
+    }, this.mapLayer.mapLayerCacheKey, "tileHoverBackdrop"));
+
+    this.hoverOverlay.zIndex = TileLayer.ZINDEX_HOVER_OVERLAY;
+    this.hoverOverlay.eventMode = 'none';
+    this.tileContainer.addChild(this.hoverOverlay);
   }
 
   async cleanup() {

@@ -98,6 +98,8 @@
       if ($btn.hasClass("active")) {
         renderer.viewport.endBrush();
 
+        renderer.onTileHoverOverlay = () => false;
+
         $controls.find('button.brush').removeClass('active');
 
         return;
@@ -106,6 +108,8 @@
       $controls.find('button.brush').removeClass('active');
 
       $btn.addClass("active");
+
+      renderer.onTileHoverOverlay = () => true;
 
       renderer.viewport.registerOnBrush("mapEditorBrush", (pt) => {
         const coor = renderer.mapLayer.calcMapCoorFromPIXIPt(pt);

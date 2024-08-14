@@ -66,6 +66,17 @@ describe('map', function () {
         }
       }
     });
+
+    it('should hook non-enumerable refs', function () {
+      expect(map._dirtyTracking).toBeUndefined();
+
+      map_hook_nonenumerable_ref(map, "_dirtyTracking", true);
+
+      expect(map._dirtyTracking).toBeTrue();
+
+      expect(JSON.parse(JSON.stringify(map))._dirtyTracking).toBeUndefined();
+      expect(JSON.stringify(JSON.parse(JSON.stringify(map)))).toEqual(JSON.stringify(map));
+    });
   });
 
   describe('tile basics', function () {

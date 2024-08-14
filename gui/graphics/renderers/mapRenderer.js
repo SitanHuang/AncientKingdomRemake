@@ -5,6 +5,14 @@ class MapRenderer extends Renderer {
   viewport;
   mapObj;
 
+  /**
+   * A callback on pointerenter to return true when tile should display a hover
+   * overlay effect.
+   *
+   * (mapCoor=[row, col]) => boolean
+   */
+  onTileHoverOverlay;
+
   mapLayer;
 
   async begin({ mapObj }) {

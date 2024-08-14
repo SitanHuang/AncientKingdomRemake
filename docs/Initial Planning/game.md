@@ -142,6 +142,7 @@ Units:
 
 # Features Outside MVP (Secondary roadmap)
 - resources & market
+- trade portals (silk road, south china sea, ...)
 - legacy/imperial points to modify provinces
 - different unit types
 - cultures

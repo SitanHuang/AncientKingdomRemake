@@ -113,13 +113,14 @@ class MapLayer extends Layer {
     // On hover:
     let _oldTile = null;
     viewport.registerOnHover("mapLayer", (pt) => {
-      _oldTile?.tileContainer.emit("pointerleave");
+      _oldTile?.destroyHoverOverlay();
       _oldTile = null;
 
       const coor = this.calcMapCoorFromPIXIPt(pt);
       _oldTile = coor ? this.cacheManager.getFreshObjOrNull(this.mapLayerCacheKey, coor[0], coor[1]) : null;
 
-      _oldTile?.tileContainer.emit("pointerenter");
+      if (this.renderer.onTileHoverOverlay && this.renderer.onTileHoverOverlay(coor))
+        _oldTile?.createHoverOverlay();
     });
   }
 

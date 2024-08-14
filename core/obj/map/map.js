@@ -26,9 +26,26 @@ function map_create({ width, height }) {
      * is no longer possible.
      */
     locked: false,
+
+    _terAuxUpToDate: false,
   };
 
   return map;
+}
+
+/**
+ * Allows hooking a dynamic, runtime reference while still keeping a map
+ * JSON-compliant
+ */
+function map_hook_nonenumerable_ref(map, key, ref) {
+  Object.defineProperty(map, key, {
+    enumerable: false,
+    value: ref
+  });
+}
+
+function map_set_dirty_tile(map, [row, col]) {
+  // TODO: stub
 }
 
 function map_at(map, [row, col]) {
@@ -36,6 +53,8 @@ function map_at(map, [row, col]) {
 }
 
 function map_set(map, [row, col], tile) {
+  map._terAuxUpToDate = false;
+
   if (map.locked)
     throw "Cannot replace a tile in a Locked Map!";
 
@@ -46,6 +65,8 @@ function map_set(map, [row, col], tile) {
 }
 
 function map_del(map, [row, col]) {
+  map._terAuxUpToDate = false;
+
   if (map.locked)
     throw "Cannot delete a tile in a Locked Map!";
 

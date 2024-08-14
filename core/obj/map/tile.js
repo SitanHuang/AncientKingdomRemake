@@ -4,6 +4,8 @@ function tile_create(override) {
   const tile = {
     _pop: 0, // TODO: change to cultures; for now this should not be accessed directly
 
+    pt: [row, col],
+
     row: row,
     col: col,
 
@@ -51,6 +53,10 @@ function tile_create(override) {
   return Object.assign(tile, override);
 }
 
+/**
+ * This function does NOT participate in standard dirty obj tracking because
+ * it's used only in the map editor.
+ */
 function tile_river_calc_graphic_type(map, tile, propagate=true, dirtyFunc) {
   if (tile.ter != KEY_TER_RIVER) {
     delete tile.terAux.riverGType;
@@ -62,7 +68,7 @@ function tile_river_calc_graphic_type(map, tile, propagate=true, dirtyFunc) {
   if (dirtyFunc)
     dirtyFunc(tile);
 
-  map_instant_neighbors(map, [tile.row, tile.col], (tile2) => {
+  map_instant_neighbors(map, tile.pt, (tile2) => {
     if (tile2.ter != KEY_TER_RIVER)
       return;
 

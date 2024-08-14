@@ -36,7 +36,7 @@ const TERRAIN_MOD_OBJS = {
     econ: 0.4,
     upkeep: 2,
     defence: 1.2,
-    speed: 0.6,
+    speed: 0.8,
     attrition: 0.92,
   },
   [KEY_TER_HILL]: {
