@@ -1,13 +1,16 @@
 class TileLayer extends Layer {
   static ZINDEX_HOVER_OVERLAY = 1000;
-  static ZINDEX_TERRAIN_SQUARE = 10;
-  static ZINDEX_OCCUPIER_SQUARE = 2;
-  static ZINDEX_OWNER_SQUARE = 1;
+  static ZINDEX_TERRAIN_SQUARE = 50;
+  static ZINDEX_COLOR_LAYER = 20;
+  static ZINDEX_OCCUPIER_SQUARE = 20;
+  static ZINDEX_OWNER_SQUARE = 10;
 
   pt;
   mapLayer;
 
   tileContainer;
+
+  colorScaleSquare;
 
   hoverOverlay;
 
@@ -16,6 +19,10 @@ class TileLayer extends Layer {
 
     this.pt = pt;
     this.mapLayer = mapLayer;
+  }
+
+  get tileObj() {
+    return map_at(this.mapLayer.mapObj, this.pt);
   }
 
   get TILE_SIZE() {
@@ -58,7 +65,7 @@ class TileLayer extends Layer {
 
     this.tileContainer.eventMode = 'dynamic';
 
-    const tileObj = map_at(this.mapLayer.mapObj, this.pt);
+    const tileObj = this.tileObj;
 
     gui_graphics_tile_drawcolor(this, this.tileContainer, tileObj);
 

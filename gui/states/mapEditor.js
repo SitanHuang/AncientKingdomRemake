@@ -92,6 +92,34 @@
       $uiLayer.html('');
     },
 
+    async onCalcPop({ $btn }) {
+      if ($btn.hasClass("active")) {
+        renderer.mapLayer.removeColorScale();
+        $btn.removeClass("active");
+        return;
+      }
+
+      // TODO: stub
+
+      await gui_dialog_loading_begin();
+
+      terrain_recalc_soil(mapObj);
+
+      renderer.mapLayer.paintColorScale({
+        valFunc(tile) {
+          return tile.terAux.soil || 0;
+        },
+        alpha: 0.6,
+        minVal: 0,
+        maxVal: 1.1,
+        colors: ['white', '#063E2A'],
+      });
+
+      $btn.addClass("active");
+
+      await gui_dialog_loading_end();
+    },
+
     async onBrushSelect({ btn, terrain }) {
       const $btn = $(btn);
 

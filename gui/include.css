@@ -1,5 +1,6 @@
 :root {
   --ui-font: Arial, Helvetica, sans-serif;
+  --ui-font-mono: Consolas, Monaco, 'Courier New', monospace;
   --input-font: var(--ui-font);
   --pane-color: white;
   --pane-bg: #171a21;
@@ -52,7 +53,6 @@ root ui-layer {
   left: 0;
   margin: 0;
   padding: 0;
-  font-size: 0;
   width: 100%;
   height: 100%;
 }
@@ -163,6 +163,37 @@ ui-layer > .fill-screen,
   display: block;
   width: auto;
   height: auto;
+}
+.cursor-wait {
+  cursor: wait;
+  pointer-events: auto;
+}
+.overlay {
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  overflow: auto;
+  display: grid;
+}
+.overlay .center-box,
+.overlay .loading-box {
+  place-self: center;
+  color: var(--pane-color);
+  background-color: var(--pane-bg);
+  box-shadow: var(--pane-box-shadow);
+}
+.overlay .loading-box {
+  padding: 2em 4em;
+}
+.overlay .loading-box .loading-text {
+  font-family: var(--ui-font-mono);
+  font-size: 1.5rem;
+  text-align: left;
+  border-radius: 4px;
 }
 .template-start-menu .pane {
   font-size: 1.25rem;

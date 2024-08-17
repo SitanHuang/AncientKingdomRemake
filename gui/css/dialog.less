@@ -1,0 +1,35 @@
+.overlay {
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9000;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: inherit;
+  height: inherit;
+  overflow: auto;
+
+  display: grid;
+
+  .center-box {
+    place-self: center;
+
+    color: var(--pane-color);
+    background-color: var(--pane-bg);
+    box-shadow: var(--pane-box-shadow);
+  }
+
+  .loading-box {
+    &:extend(.overlay .center-box);
+
+    padding: 2em 4em;
+
+    .loading-text {
+      font-family: var(--ui-font-mono);
+      font-size: 1.5rem;
+      text-align: left;
+      border-radius: 4px;
+    }
+  }
+}

@@ -151,6 +151,32 @@ class CacheManager {
       .get(CacheManager.SYM_DIRTY);
   }
 
+  iterateAllChildren(callback, ...keys) {
+    const parent = this.#getContainerMap(keys, true);
+
+    const stack = [parent];
+
+    while (stack.length) {
+      const parent = stack.pop();
+      const self = parent.get(CacheManager.SYM_SELF);
+
+      self && callback(self);
+
+      parent.forEach((val, key) => {
+        if (key === CacheManager.SYM_DIRTY ||
+          key === CacheManager.SYM_KEYS ||
+          key === CacheManager.SYM_SELF ||
+          key === CacheManager.SYM_PARENT_MAP ||
+          !(val instanceof Map))
+          return;
+
+        stack.push(val);
+      });
+    }
+
+    return this;
+  }
+
   setDirty(...keys) {
     const parent = this.#getContainerMap(keys, true);
 

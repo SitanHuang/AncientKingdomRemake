@@ -8,6 +8,7 @@
   <!-- Core: External -->
   <script src="core/ext/js-sdsl.min.js"></script>
   <script src="core/ext/logger.min.js"></script>
+  <script src="core/ext/seedrandom.min.js"></script> <!-- alea algo only -->
 
   <!-- Core: Includes -->
   <script src="core/obj/enums.js"></script>
@@ -22,15 +23,18 @@
   <script src="gui/ext/jquery-3.7.1.min.js"></script>
   <script src="gui/ext/pixi.min.js"></script>
   <script src="gui/ext/stats.min.js"></script>
+  <script src="gui/ext/chroma.min.js"></script>
 
   <!-- UI: Includes -->
 
   <script src="gui/constants.js"></script>
+  <script src="gui/utils.js"></script>
   <script src="gui/env.js"></script>
   <script src="gui/state.js"></script>
   <script src="gui/fs/serialize.js"></script>
   <script src="gui/fs/save.js"></script>
   <script src="gui/fs/load.js"></script>
+  <script src="gui/dialog.js"></script>
   <script src="gui/graphics/utils.js"></script>
   <script src="gui/graphics/config.js"></script>
   <script src="gui/graphics/cacheManager.js"></script>
@@ -53,14 +57,15 @@
 </head>
 <body>
   <root>
-    <canvas-container>
-
-    </canvas-container>
-    <ui-layer>
-
-    </ui-layer>
+    <canvas-container></canvas-container>
+    <ui-layer></ui-layer>
   </root>
   <templates>
+    <div class="template-loading-box overlay cursor-wait">
+      <div class="loading-box">
+        <div class="loading-text">Loading...</div>
+      </div>
+    </div>
     <div class="template-start-menu">
       <div class="pane">
         <h1>AKR</h1>
@@ -88,6 +93,7 @@
         </form>
         <div class="controls">
           <divider></divider>
+          <button type="button" onclick="gui_state_dispatchEvent('onCalcPop', { $btn: $(this) })">Calculate Soil Quality</button>
           <button type="button" onclick="gui_state_dispatchEvent('onSaveMap')">Save To File</button>
           <divider></divider>
           <label>Image URL</label>

@@ -14,6 +14,65 @@ class MapLayer extends Layer {
 
   log = Logger.get("gui.graphics.layers.maplayer");
 
+  removeColorScale() {
+    this.iterateTileLayers(tile => {
+      if (tile) {
+        tile.colorScaleSquare?.destroy({ context: false });
+        tile.colorScaleSquare = null;
+      }
+    });
+  }
+
+  paintColorScale({
+    filterFunc=null,
+    valFunc,
+    alpha=0.6,
+    minVal=0,
+    maxVal=3,
+    levels=20,
+    colors,
+  }) {
+    const scale = chroma
+      .scale(colors)
+      .domain([minVal, maxVal])
+      .classes(levels);
+
+    this.iterateTileLayers(tileLayer => {
+      tileLayer.colorScaleSquare?.destroy({ context: false });
+      tileLayer.colorScaleSquare = null;
+
+      const tileObj = tileLayer.tileObj;
+
+      if (!tileObj || (filterFunc && !filterFunc(tileObj)))
+        return;
+
+      const color = scale(valFunc(tileObj)).num();
+
+      const square = new PIXI.Graphics(
+        tileLayer.getFreshSquareOrReplace(
+          color, alpha,
+          "colorSquares", color + ':' + alpha
+        )
+      );
+
+      square.zIndex = TileLayer.ZINDEX_COLOR_LAYER;
+      square.eventMode = 'none';
+
+      tileLayer.tileContainer.addChild(square);
+
+      tileLayer.colorScaleSquare = square;
+    });
+  }
+
+  iterateTileLayers(callback) {
+    this.log.time("iterateTileLayers");
+    this.cacheManager.iterateAllChildren(obj => {
+      if (obj instanceof TileLayer)
+        callback(obj);
+    }, this.mapLayerCacheKey);
+    this.log.timeEnd("iterateTileLayers");
+  }
+
   calcTileMapCoor(pt) {
     return [pt[1] * this.graphicsConfig.TILE_SIZE, pt[0] * this.graphicsConfig.TILE_SIZE];
   }
@@ -118,6 +177,8 @@ class MapLayer extends Layer {
 
       const coor = this.calcMapCoorFromPIXIPt(pt);
       _oldTile = coor ? this.cacheManager.getFreshObjOrNull(this.mapLayerCacheKey, coor[0], coor[1]) : null;
+
+      console.log(_oldTile?.tileObj?.terAux?.soil);
 
       if (this.renderer.onTileHoverOverlay && this.renderer.onTileHoverOverlay(coor))
         _oldTile?.createHoverOverlay();

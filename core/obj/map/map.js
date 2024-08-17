@@ -1,4 +1,11 @@
 /**
+ * consistent RNG generator for all map generation purposes
+ */
+function map_gen_rng() {
+  return alea('map_gen_rng', { state: false });
+}
+
+/**
  * a Map fully defines the physical, playable world, but excludes
  * everything other than the environment (e.g., civs, cultures, ...)
  */
@@ -77,6 +84,8 @@ function map_del(map, [row, col]) {
 }
 
 /**
+ * UNOPTIMIZED
+ *
  * Iterates neighbors instantly (without using cache)
  */
 function map_instant_neighbors(map, [r, c], callback) {
@@ -86,6 +95,33 @@ function map_instant_neighbors(map, [r, c], callback) {
   (tmp = map_at(map, [r + 1, c])) && callback(tmp);
   (tmp = map_at(map, [r, c - 1])) && callback(tmp);
   (tmp = map_at(map, [r, c + 1])) && callback(tmp);
+}
+
+/**
+ * UNOPTIMIZED
+ *
+ * Iterates neighbors instantly, without using cache, using slow recursion
+ */
+function map_instant_neighbors_recursive(map, pt, maxDepth, callback, includeSelf=false, depth=0, sampleFilter=null) {
+  const visited = new Set();
+  visited.add(tile_id_from_pt(...pt));
+
+  if (includeSelf)
+    callback(map_at(map, pt));
+
+  map_instant_neighbors(map, pt, tile => {
+    if (visited.has(tile.id))
+      return;
+    if (sampleFilter && !(sampleFilter(tile, depth)))
+      return;
+
+    visited.add(tile.id);
+
+    callback(tile);
+
+    if (depth + 1 < maxDepth)
+      map_instant_neighbors_recursive(map, tile.pt, maxDepth, callback, includeSelf = false, depth + 1, sampleFilter);
+  });
 }
 
 /**

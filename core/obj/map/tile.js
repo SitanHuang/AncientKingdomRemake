@@ -98,6 +98,10 @@ function tile_pt_from_id(id) {
   return [ row, col ];
 }
 
+function tile_dist(pt1, pt2) {
+  return Math.sqrt((pt1[0] - pt2[0]) ** 2 + (pt1[1] - pt2[1]) ** 2);
+}
+
 function tile_terrainMod(tile) {
   return terrain_modObj(tile.ter);
 }

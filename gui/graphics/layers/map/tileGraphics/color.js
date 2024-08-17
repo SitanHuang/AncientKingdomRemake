@@ -4,7 +4,6 @@
  * Functions should be called on a blank tileContainer (e.g., from tileLayer.render())
  */
 ;
-
 function gui_graphics_tile_drawcolor(tileLayer, tileContainer, tileObj) {
   // Holes
   if (tileObj == null)
