@@ -31,5 +31,26 @@
       text-align: left;
       border-radius: 4px;
     }
+
+    .progress-con {
+      margin-top: 1rem;
+
+      font-size: 0;
+
+      height: 4px;
+      width: 100%;
+      min-width: min(85dvw, 12em);
+
+      background: rgba(0, 0, 0, 0.6);
+
+      .progress {
+        height: inherit;
+        width: 0%;
+        display: inline-block;
+
+        background: rgb(50, 75, 200);
+        box-shadow: 0px 1px 8px 1px rgba(100, 150, 255, 0.4);
+      }
+    }
   }
 }

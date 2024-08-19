@@ -1,6 +1,4 @@
 (async function () {
-  const log = Logger.get("gui.state.mapEditor");
-
   let renderer;
 
   let $mapEditor;
@@ -23,7 +21,7 @@
       $form = $mapEditor.find('.left-pane form');
       let $submit = $form.find('button');
 
-      $form.find('input').on('input', function(e) {
+      $form.find('input').on('input', function() {
         $submit.attr('disabled', !$form[0].checkValidity());
       });
 
@@ -46,7 +44,10 @@
     },
 
     async onLoadMap() {
-      mapObj = await fs_prompt_load_obj();
+      mapObj = (await fs_prompt_load_obj()) || null;
+
+      if (!mapObj)
+        return;
 
       gui_state_dispatchEvent("beginCanvas");
       $form.hide();
@@ -60,6 +61,8 @@
     },
 
     async beginCanvas() {
+      await gui_dialog_loading_begin();
+
       const state = await gui_state_getStore();
 
       if (state.renderer)
@@ -80,6 +83,12 @@
 
         gui_state_dispatchEvent("onInsertBGImg", { imgURL, offsetX, offsetY, scale, alpha });
       };
+
+      $controls.find('input[name="depth"], input[name="sample"]').change(() => {
+        mapObj._terAuxUpToDate = false;
+      });
+
+      await gui_dialog_loading_end();
     },
 
     async cleanup() {
@@ -88,32 +97,60 @@
       if (renderer) {
         await renderer.cleanup();
         window.renderer = renderer = state.renderer = null;
+        mapObj = null;
       }
       $uiLayer.html('');
     },
 
     async onCalcPop({ $btn }) {
       if ($btn.hasClass("active")) {
+        renderer.onTileTooltip = null;
         renderer.mapLayer.removeColorScale();
         $btn.removeClass("active");
         return;
       }
 
-      // TODO: stub
+      await gui_dialog_loading_begin({ progress: true });
 
-      await gui_dialog_loading_begin();
-
-      terrain_recalc_soil(mapObj);
+      if (!mapObj._terAuxUpToDate)
+        await terrain_recalc_soil(
+          mapObj,
+          {
+            progressFunc: gui_dialog_loading_progress,
+            samplePerc: parseFloat(
+              $controls.find('input[name="sample"]').val()
+            ) || undefined,
+            depth: parseFloat(
+              $controls.find('input[name="depth"]').val()
+            ) || undefined,
+          }
+        );
 
       renderer.mapLayer.paintColorScale({
         valFunc(tile) {
           return tile.terAux.soil || 0;
         },
-        alpha: 0.6,
-        minVal: 0,
-        maxVal: 1.1,
-        colors: ['white', '#063E2A'],
+        alpha: 0.7,
+        domain: [
+          -0.05,
+          0.2,
+          0.5,
+          0.9,
+          mapObj.__terAuxPopStat?.max || 1.1],
+        colors: [
+          '#dec1ad',
+          'white',
+          '#c2c793',
+          '#0B6E4A',
+          '#078a1d'],
       });
+
+      renderer.onTileTooltip = (pt) => {
+        const s = map_at(mapObj, pt)?.terAux?.soil;
+        return s && gui_tooltip_ele_padded_info(
+          `Soil richness: ${Math.round(s * 100)}%`
+        );
+      };
 
       $btn.addClass("active");
 

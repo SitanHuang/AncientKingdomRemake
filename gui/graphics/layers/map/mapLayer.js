@@ -27,14 +27,13 @@ class MapLayer extends Layer {
     filterFunc=null,
     valFunc,
     alpha=0.6,
-    minVal=0,
-    maxVal=3,
+    domain=[0, 3],
     levels=20,
     colors,
   }) {
     const scale = chroma
       .scale(colors)
-      .domain([minVal, maxVal])
+      .domain(domain)
       .classes(levels);
 
     this.iterateTileLayers(tileLayer => {
@@ -171,17 +170,31 @@ class MapLayer extends Layer {
   hookEventsToViewport(viewport) {
     // On hover:
     let _oldTile = null;
-    viewport.registerOnHover("mapLayer", (pt) => {
+    let _drawTooltip = null;
+    viewport.registerOnHover("mapLayer", (pt, event) => {
       _oldTile?.destroyHoverOverlay();
       _oldTile = null;
 
       const coor = this.calcMapCoorFromPIXIPt(pt);
-      _oldTile = coor ? this.cacheManager.getFreshObjOrNull(this.mapLayerCacheKey, coor[0], coor[1]) : null;
-
-      console.log(_oldTile?.tileObj?.terAux?.soil);
+      const sameTile = _oldTile && ptEq(_oldTile.pt, coor);
+      _oldTile = coor ? this.cacheManager.getFreshObjOrNull(this.mapLayerCacheKey, ...coor) : null;
 
       if (this.renderer.onTileHoverOverlay && this.renderer.onTileHoverOverlay(coor))
         _oldTile?.createHoverOverlay();
+
+      if (this.renderer.onTileTooltip) {
+        if (!sameTile) {
+          _drawTooltip = this.renderer.onTileTooltip(coor);
+          (_drawTooltip && gui_tooltip_create(_drawTooltip))
+            || (gui_tooltip_destroy());
+        }
+
+        // if same tile, we just move
+        _drawTooltip && gui_tooltip_move(event);
+      } else {
+        _drawTooltip = null;
+        gui_tooltip_destroy();
+      }
     });
   }
 

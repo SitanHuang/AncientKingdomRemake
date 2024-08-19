@@ -165,7 +165,10 @@ class Viewport {
       // hover only, didn't previously touch down
 
       this.#onHoverCallbacks.forEach((callback) => {
-        callback(this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)));
+        callback(
+          this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)),
+          event
+        );
       });
 
       return;
@@ -175,7 +178,10 @@ class Viewport {
       // previously touched down (index != -1)
 
       this.#onBrushCallbacks.forEach((callback) => {
-        callback(this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)));
+        callback(
+          this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)),
+          event
+        );
       });
 
       return;

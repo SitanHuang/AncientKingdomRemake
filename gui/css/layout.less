@@ -135,6 +135,26 @@ button {
 
 /* Helpers */
 
+.monospace {
+  font-family: var(--ui-font-mono);
+}
+
+.half {
+  width: 50%;
+}
+
+.left-float {
+  float: left;
+
+  &:not(:last-child) {
+    padding-right: 1em;
+  }
+}
+
+.clear, divider {
+  clear: both;
+}
+
 ui-layer {
   pointer-events: none;
 

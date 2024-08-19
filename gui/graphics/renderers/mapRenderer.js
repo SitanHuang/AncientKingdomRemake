@@ -12,6 +12,13 @@ class MapRenderer extends Renderer {
    * (mapCoor=[row, col]) => boolean
    */
   onTileHoverOverlay;
+  /**
+   * A callback on pointerenter to optionally create a tooltip element.
+   * The created element is automatically destroyed on pointerleave.
+   *
+   * (mapCoor=[row, col]) => false | $tooltipChild
+   */
+  onTileTooltip;
 
   mapLayer;
 
@@ -46,6 +53,8 @@ class MapRenderer extends Renderer {
 
   async cleanup() {
     await super.cleanup();
+
+    this.viewport?.destroy();
 
     if (this.mapLayer)
       await this.mapLayer.cleanup();

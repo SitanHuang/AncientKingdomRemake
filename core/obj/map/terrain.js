@@ -70,27 +70,44 @@ function terrain_modObj(key) {
   return TERRAIN_MOD_OBJS[key];
 }
 
-function terrain_recalc_soil(map) {
+async function terrain_recalc_soil(map, {
+  depth=12,
+  samplePerc=0.1,
+  progressFunc
+}={}) {
   Logger.get("core.obj.map.terrain.terrain_recalc_soil").time("terrain_recalc_soil");
 
-  _terrain_gen_auxObj(map, {
+  const river = (pt) => {
+    let count = 0;
+
+    map_instant_neighbors(map, pt, (tile2) => {
+      count += tile2.ter == KEY_TER_PLAIN || tile2.ter == KEY_TER_RIVER ?
+        1 : (tile_terrainMod(tile2).pop);
+    });
+
+    return 1.5 * Math.min(1, (count / 4) ** 4);
+  };
+
+  const stat = await _terrain_gen_auxObj(map, {
     resultKey: 'soil',
 
-    depth: 10,
-    power: 11,
+    depth,
+    power: 9,
     root: 2,
     scale: 1.4,
     constant: 0.1,
     min: 0.05,
 
-    samplePerc: 0.04,
+    samplePerc,
 
-    selfFunc(ter) {
-      return ter._river ? 1.2 : ter.pop;
+    progressFunc,
+
+    selfFunc(ter, { pt }) {
+      return ter._river ? river(pt) : ter.pop;
     },
-    func(ter) {
+    func(ter, { pt }) {
       if (ter._river)
-        return 2;
+        return river(pt);
 
       const val = (ter.pop - 0.75);
 
@@ -98,16 +115,23 @@ function terrain_recalc_soil(map) {
     },
 
     maxFunc(ter) {
-      return ((ter.pop + 0.05) * 0.9
+      return ter._river ? 1 : ((ter.pop + 0.05) * 0.9
         + ter.speed * 0.05)
         * (ter.attrition ** 2);
     }
   });
 
+  map.__terAuxPopStat = stat;
+
+  // So far just the soil needs to be calculated
+  map._terAuxUpToDate = true;
+
   Logger.get("core.obj.map.terrain.terrain_recalc_soil").timeEnd("terrain_recalc_soil");
+
+  return stat;
 }
 
-function _terrain_gen_auxObj(map, {
+async function _terrain_gen_auxObj(map, {
   resultKey,
   selfFunc,
   func,
@@ -119,8 +143,16 @@ function _terrain_gen_auxObj(map, {
   constant,
   min,
   samplePerc,
+
+  progressFunc,
 }) {
   const rng = map_gen_rng();
+  const stat = {
+    max: 0,
+    sum: 0,
+    avg: 0,
+    count: 0,
+  };
 
   for (let r = 0; r < map.height; r++) {
     for (let c = 0; c < map.width; c++) {
@@ -158,6 +190,15 @@ function _terrain_gen_auxObj(map, {
       mod = Math.max(min, mod);
 
       tile.terAux[resultKey] = mod;
+
+      stat.count++;
+      stat.max = Math.max(stat.max, mod);
+      stat.sum += mod;
     }
+
+    await progressFunc(r / map.height);
   }
+
+  stat.avg = stat.sum / stat.count;
+  return stat;
 }

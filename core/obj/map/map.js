@@ -23,7 +23,7 @@ function map_create({ width, height }) {
      * out-of-bound access is assumed. JSONs only take in
      * nulls.
      */
-    tiles: Array(height).fill(null).map(x => Array(width).fill(null)),
+    tiles: Array(height).fill(null).map(_ => Array(width).fill(null)),
 
     width: width,
     height: height,
@@ -101,27 +101,53 @@ function map_instant_neighbors(map, [r, c], callback) {
  * UNOPTIMIZED
  *
  * Iterates neighbors instantly, without using cache, using slow recursion
+ *
+ * // TODO: Now we use a radius approach where radius=depth; when map allows
+ * //       arbitrary connections, we'll then modify
  */
 function map_instant_neighbors_recursive(map, pt, maxDepth, callback, includeSelf=false, depth=0, sampleFilter=null) {
-  const visited = new Set();
-  visited.add(tile_id_from_pt(...pt));
+  const minRow = Math.max(0, pt[0] - maxDepth);
+  const maxRow = Math.min(map.height, pt[0] + maxDepth);
+  const minCol = Math.max(0, pt[1] - maxDepth);
+  const maxCol = Math.min(map.width, pt[1] + maxDepth);
 
-  if (includeSelf)
-    callback(map_at(map, pt));
+  for (let r = minRow; r < maxRow; r++) {
+    for (let c = minCol; c < maxCol; c++) {
+      const tile = map_at(map, [r, c]);
+      if (!tile)
+        continue;
 
-  map_instant_neighbors(map, pt, tile => {
-    if (visited.has(tile.id))
-      return;
-    if (sampleFilter && !(sampleFilter(tile, depth)))
-      return;
+      const dist = Math.sqrt((pt[0] - r) ** 2 + (pt[1] - c) ** 2);
 
-    visited.add(tile.id);
+      if (
+        dist > maxDepth ||
+        (!includeSelf && dist == 0) ||
+        (sampleFilter && !(sampleFilter(tile, Math.floor(dist))))
+      )
+        continue;
 
-    callback(tile);
+      callback(tile, dist);
+    }
+  }
+  // const visited = new Set();
+  // visited.add(tile_id_from_pt(...pt));
 
-    if (depth + 1 < maxDepth)
-      map_instant_neighbors_recursive(map, tile.pt, maxDepth, callback, includeSelf = false, depth + 1, sampleFilter);
-  });
+  // if (includeSelf)
+  //   callback(map_at(map, pt));
+
+  // map_instant_neighbors(map, pt, tile => {
+  //   if (visited.has(tile.id))
+  //     return;
+  //   if (sampleFilter && !(sampleFilter(tile, depth)))
+  //     return;
+
+  //   visited.add(tile.id);
+
+  //   callback(tile);
+
+  //   if (depth + 1 < maxDepth)
+  //     map_instant_neighbors_recursive(map, tile.pt, maxDepth, callback, includeSelf = false, depth + 1, sampleFilter);
+  // });
 }
 
 /**

@@ -9,8 +9,10 @@ function fs_prompt_load_obj({
     input.onchange = e => {
       const file = e.target.files[0];
 
-      if (!file)
+      if (!file) {
+        resolve(false);
         return;
+      }
 
       fs_deserialize_file_to_obj(file)
         .then(resolve)
