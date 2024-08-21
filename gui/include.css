@@ -216,7 +216,7 @@ ui-layer > .fill-screen,
   font-size: 0;
   height: 4px;
   width: 100%;
-  min-width: min(85dvw, 12em);
+  min-width: min(85dvw, 14em);
   background: rgba(0, 0, 0, 0.6);
 }
 .overlay .loading-box .progress-con .progress {
@@ -225,6 +225,7 @@ ui-layer > .fill-screen,
   display: inline-block;
   background: #324bc8;
   box-shadow: 0px 1px 8px 1px rgba(100, 150, 255, 0.4);
+  transition: width ease 300ms;
 }
 .tooltip-con {
   z-index: 5000;

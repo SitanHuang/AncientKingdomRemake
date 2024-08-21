@@ -25,7 +25,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.99,
   },
   [KEY_TER_STEPPE]: {
-    pop: 0.2,
+    pop: 0.3,
     econ: 1.2,
     upkeep: 1,
     defence: 0.8,
@@ -94,8 +94,8 @@ async function terrain_recalc_soil(map, {
     depth,
     power: 9,
     root: 2,
-    scale: 1.4,
-    constant: 0.1,
+    scale: 1,
+    constant: 0.1884,
     min: 0.05,
 
     samplePerc,

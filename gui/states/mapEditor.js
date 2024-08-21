@@ -134,12 +134,14 @@
         domain: [
           -0.05,
           0.2,
+          0.3,
           0.5,
           0.9,
           mapObj.__terAuxPopStat?.max || 1.1],
         colors: [
           '#dec1ad',
           'white',
+          '#fcfcc5',
           '#c2c793',
           '#0B6E4A',
           '#078a1d'],

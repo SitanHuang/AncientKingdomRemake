@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest",
     "watch-less": "less-watch-compiler gui/css gui include.less --source-map",
-    "server": "http-server ./"
+    "server": "http-server -c-1 ./"
   },
   "author": "Sitan Huang",
   "devDependencies": {

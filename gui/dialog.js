@@ -17,10 +17,10 @@ let gui_dialog_loading_end;
     });
   }
 
-  gui_dialog_loading_progress = async function(progress, timeout=1) {
-    await gui_wrap_timeout_promise(() => {
+  gui_dialog_loading_progress = async function (progress, throttleInterval = 500, timeout = 50) {
+    await gui_wrap_timeout_promise_throttled(() => {
       $progress?.find('.progress').css('width', (progress * 100) + '%');
-    }, timeout);
+    }, throttleInterval, timeout);
   };
 
   gui_dialog_loading_end = async function() {
