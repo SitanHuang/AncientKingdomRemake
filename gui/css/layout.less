@@ -109,6 +109,10 @@ button {
   }
 }
 
+.pad {
+  padding: 1em;
+}
+
 .pane {
   font-size: 1rem;
 
@@ -116,7 +120,9 @@ button {
   background: var(--pane-bg);
   box-shadow: var(--pane-box-shadow);
 
-  padding: 1em;
+  overflow-y: auto;
+
+  &:extend(.pad);
 
   &.no-padding {
     padding: 0;
@@ -160,6 +166,46 @@ ui-layer {
 
   & .pane {
     pointer-events: auto;
+
+    item {
+      display: block;
+
+      font-size: 1.25em;
+
+      background: inherit;
+
+      border-top: 1px solid #2f3138;
+      border-bottom: 1px solid #000000;
+      color: #bdbdbd;
+      padding: 0 1em;
+      white-space: nowrap;
+      line-height: 2.5em;
+
+      cursor: pointer;
+      transition: var(--ui-component-transition);
+
+      &:hover {
+        background: #192533;
+      }
+    }
+
+    .horizontal-items {
+      display: flex;
+      flex-direction: row;
+
+      item {
+        flex: 1;
+
+        text-align: center;
+
+        &:not(:first-child) {
+          border-left: 1px solid #000000;
+        }
+        &:not(:last-child) {
+          border-right: 1px solid #2f3138;
+        }
+      }
+    }
   }
 
   & > .fill-screen {
@@ -167,6 +213,16 @@ ui-layer {
     height: 100%;
 
     background: transparent;
+  }
+
+  .overlay-pane-con {
+    &:extend(.centering-grid);
+    &:extend(ui-layer > .fill-screen);
+
+    .overlay-pane {
+      &:extend(.centering-grid > *:first-child);
+      &:extend(.pane all);
+    }
   }
 }
 
@@ -176,8 +232,6 @@ ui-layer {
 
   & > *:first-child {
     display: block;
-    width: auto;
-    height: auto;
   }
 }
 

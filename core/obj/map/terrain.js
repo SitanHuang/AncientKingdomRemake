@@ -1,5 +1,6 @@
 const TERRAIN_MOD_OBJS = {
   [KEY_TER_DEFAULT]: {
+    name: 'Default',
     pop: 1, // pop growth
     econ: 1, // econ factor
     upkeep: 1, // unit consumption
@@ -8,6 +9,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.97, // production transfer efficiency out of tile
   },
   [KEY_TER_PLAIN]: {
+    name: 'Plain',
     pop: 1,
     econ: 1,
     upkeep: 1,
@@ -16,6 +18,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.97,
   },
   [KEY_TER_RIVER]: {
+    name: 'River',
     _river: true,
     pop: 0.8,
     econ: 2,
@@ -25,6 +28,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.99,
   },
   [KEY_TER_STEPPE]: {
+    name: 'Steppe',
     pop: 0.3,
     econ: 1.2,
     upkeep: 1,
@@ -33,6 +37,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.96,
   },
   [KEY_TER_DESERT]: {
+    name: 'Desert',
     pop: 0.1,
     econ: 0.4,
     upkeep: 2,
@@ -41,6 +46,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.92,
   },
   [KEY_TER_HILL]: {
+    name: 'Hill',
     pop: 0.7,
     econ: 0.8,
     upkeep: 1.2,
@@ -49,6 +55,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.95,
   },
   [KEY_TER_MOUNTAIN]: {
+    name: 'Mountain',
     pop: 0.3,
     econ: 0.5,
     upkeep: 1.8,
@@ -57,6 +64,7 @@ const TERRAIN_MOD_OBJS = {
     attrition: 0.93,
   },
   [KEY_TER_MOUNTAIN2]: {
+    name: 'Mountain (Extreme)',
     pop: 0.1,
     econ: 0.3,
     upkeep: 2,

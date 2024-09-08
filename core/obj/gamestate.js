@@ -6,25 +6,26 @@ function gamestate_create(override={}) {
     cultures: {},
     civs: {},
 
-    randState: true, // rand state
+    beginStamp: 0,
+    currentStamp: 0,
+
+    turns: 0,
+    weeksPerTurn: 1,
+
+    turnsPerProdCycle: 12,
+
+    currentOrders: [],
+    currentPlayer: null,
+    currentGov: null,
+
+    randState: true, // rand state; true = initialize
   }, override);
 
-  gamestate_hook_nonenumerable_ref(
+  hook_nonenumerable_ref(
     gamestate,
-    "_rand",
-    alea('map_gen_rng', { state: gamestate.randState })
+    "_rng",
+    alea(gamestate.seed, { state: gamestate.randState })
   );
 
   return gamestate;
-}
-
-/**
- * Allows hooking a dynamic, runtime reference while still keeping a gamestate
- * JSON-compliant
- */
-function gamestate_hook_nonenumerable_ref(gamestate, key, ref) {
-  Object.defineProperty(gamestate, key, {
-    enumerable: false,
-    value: ref
-  });
 }

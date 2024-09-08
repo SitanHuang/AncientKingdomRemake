@@ -18,6 +18,11 @@
   <script src="core/obj/map/map.js"></script>
   <script src="core/obj/map/terrain.js"></script>
   <script src="core/obj/map/tile.js"></script>
+  <script src="core/obj/culture.js"></script>
+  <script src="core/obj/civ.js"></script>
+  <script src="core/obj/gov/gov.js"></script>
+  <script src="core/obj/stats/hist.js"></script>
+  <script src="core/obj/stats/stats.js"></script>
 
   <!-- UI: External -->
   <script src="gui/ext/jquery-3.7.1.min.js"></script>
@@ -36,6 +41,7 @@
   <script src="gui/fs/load.js"></script>
   <script src="gui/dialog.js"></script>
   <script src="gui/tooltip.js"></script>
+  <script src="gui/formMapper.js"></script>
   <script src="gui/graphics/utils.js"></script>
   <script src="gui/graphics/config.js"></script>
   <script src="gui/graphics/cacheManager.js"></script>
@@ -53,7 +59,10 @@
   <script src="gui/graphics/renderers/mapRenderer.js"></script>
   <script src="gui/states/startMenu.js"></script>
   <script src="gui/states/mapEditor.js"></script>
+  <script src="gui/states/scenarioEditor.js"></script>
 
+  <link rel="stylesheet" href="gui/ext/normalize.css">
+  <link rel="stylesheet" href="gui/ext/simple-grid.min.css">
   <link rel="stylesheet" href="gui/include.css">
 </head>
 <body>
@@ -74,12 +83,40 @@
     <div class="template-start-menu">
       <div class="pane">
         <h1>AKR</h1>
+        <item onclick="gui_state_switch('scenarioEditor')">
+          Scenario Editor
+        </item>
         <item onclick="gui_state_switch('mapEditor')">
           Map Editor
         </item>
         <item>
           Exit
         </item>
+      </div>
+    </div>
+    <div class="template-scenario-editor-cultures">
+      <div class="overlay-pane-con">
+        <div class="overlay-pane pane no-padding">
+          <div class="horizontal-items">
+            <item onclick="gui_state_switch('startMenu')">
+              Back
+            </item>
+            <item>
+              Next
+            </item>
+          </div>
+          <divider></divider>
+          <div class="pad">
+            <div class="row">
+              <div class="col-2">
+                <button type="button" class="btn-add-culture">Add Culture</button>
+              </div>
+            </div>
+            <divider></divider>
+            <div class="cultures">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="template-map-editor">

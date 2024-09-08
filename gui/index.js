@@ -10,4 +10,4 @@ function gui_get$Template(id) {
   return $(gui_getTemplate(id));
 }
 
-gui_state_init("mapEditor");
+gui_state_init("scenarioEditor");

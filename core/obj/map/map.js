@@ -40,17 +40,6 @@ function map_create({ width, height }) {
   return map;
 }
 
-/**
- * Allows hooking a dynamic, runtime reference while still keeping a map
- * JSON-compliant
- */
-function map_hook_nonenumerable_ref(map, key, ref) {
-  Object.defineProperty(map, key, {
-    enumerable: false,
-    value: ref
-  });
-}
-
 function map_set_dirty_tile(map, [row, col]) {
   // TODO: stub
 }

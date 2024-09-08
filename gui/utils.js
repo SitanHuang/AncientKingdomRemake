@@ -26,3 +26,17 @@ let gui_wrap_timeout_promise_throttled = (function() {
     }
   };
 })();
+
+function gui_fade_away_element(ele, ms=400, target=0) {
+  return new Promise((resolve) => {
+    $(ele).animate({ opacity: target }, ms, function () {
+      resolve();
+    });
+  });
+}
+function gui_crossfade_elements(oldEle, newEle, ms=400) {
+  return Promise.all([
+    gui_fade_away_element(oldEle, ms, 0),
+    gui_fade_away_element(newEle, ms, 1)
+  ]);
+}

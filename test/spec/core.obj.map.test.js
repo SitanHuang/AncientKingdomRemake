@@ -70,7 +70,7 @@ describe('map', function () {
     it('should hook non-enumerable refs', function () {
       expect(map._dirtyTracking).toBeUndefined();
 
-      map_hook_nonenumerable_ref(map, "_dirtyTracking", true);
+      hook_nonenumerable_ref(map, "_dirtyTracking", true);
 
       expect(map._dirtyTracking).toBeTrue();
 

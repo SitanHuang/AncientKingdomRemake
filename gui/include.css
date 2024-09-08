@@ -121,19 +121,28 @@ button.active:hover:not(:active) {
 button[disabled] {
   color: var(--button-color-disabled);
 }
-.pane {
+.pad,
+.pane,
+ui-layer .overlay-pane-con .overlay-pane {
+  padding: 1em;
+}
+.pane,
+ui-layer .overlay-pane-con .overlay-pane {
   font-size: 1rem;
   color: var(--pane-color);
   background: var(--pane-bg);
   box-shadow: var(--pane-box-shadow);
-  padding: 1em;
+  overflow-y: auto;
 }
 .pane.no-padding,
+ui-layer .overlay-pane-con .overlay-pane.no-padding,
 .template-start-menu .pane,
-.template-map-editor .left-pane {
+.template-map-editor .left-pane,
+.template-start-menu ui-layer .overlay-pane-con .overlay-pane {
   padding: 0;
 }
-.pane divider {
+.pane divider,
+ui-layer .overlay-pane-con .overlay-pane divider {
   display: block;
   width: 100%;
   height: 2px;
@@ -160,25 +169,64 @@ divider {
 ui-layer {
   pointer-events: none;
 }
-ui-layer .pane {
+ui-layer .pane,
+ui-layer ui-layer .overlay-pane-con .overlay-pane {
   pointer-events: auto;
 }
+ui-layer .pane item,
+ui-layer ui-layer .overlay-pane-con .overlay-pane item {
+  display: block;
+  font-size: 1.25em;
+  background: inherit;
+  border-top: 1px solid #2f3138;
+  border-bottom: 1px solid #000000;
+  color: #bdbdbd;
+  padding: 0 1em;
+  white-space: nowrap;
+  line-height: 2.5em;
+  cursor: pointer;
+  transition: var(--ui-component-transition);
+}
+ui-layer .pane item:hover,
+ui-layer ui-layer .overlay-pane-con .overlay-pane item:hover {
+  background: #192533;
+}
+ui-layer .pane .horizontal-items,
+ui-layer ui-layer .overlay-pane-con .overlay-pane .horizontal-items {
+  display: flex;
+  flex-direction: row;
+}
+ui-layer .pane .horizontal-items item,
+ui-layer ui-layer .overlay-pane-con .overlay-pane .horizontal-items item {
+  flex: 1;
+  text-align: center;
+}
+ui-layer .pane .horizontal-items item:not(:first-child),
+ui-layer ui-layer .overlay-pane-con .overlay-pane .horizontal-items item:not(:first-child) {
+  border-left: 1px solid #000000;
+}
+ui-layer .pane .horizontal-items item:not(:last-child),
+ui-layer ui-layer .overlay-pane-con .overlay-pane .horizontal-items item:not(:last-child) {
+  border-right: 1px solid #2f3138;
+}
 ui-layer > .fill-screen,
+ui-layer .overlay-pane-con,
 .template-start-menu,
-.template-map-editor {
+.template-map-editor,
+.template-scenario-editor-cultures {
   width: 100%;
   height: 100%;
   background: transparent;
 }
 .centering-grid,
+ui-layer .overlay-pane-con,
 .template-start-menu {
   display: grid;
   place-items: center;
 }
-.centering-grid > *:first-child {
+.centering-grid > *:first-child,
+ui-layer .overlay-pane-con .overlay-pane {
   display: block;
-  width: auto;
-  height: auto;
 }
 .cursor-wait {
   cursor: wait;
@@ -240,31 +288,15 @@ ui-layer > .fill-screen,
 .tooltip-con .padded-info {
   padding: 1em;
 }
-.template-start-menu .pane {
+.template-start-menu .pane,
+.template-start-menu ui-layer .overlay-pane-con .overlay-pane {
   font-size: 1.25rem;
   min-width: 20em;
   background: #171a21;
 }
-.template-start-menu .pane h1 {
+.template-start-menu .pane h1,
+.template-start-menu ui-layer .overlay-pane-con .overlay-pane h1 {
   text-align: center;
-}
-.template-start-menu .pane item,
-.template-map-editor .left-pane item {
-  display: block;
-  font-size: 1.25em;
-  background: inherit;
-  border-top: 1px solid #2f3138;
-  border-bottom: 1px solid #000000;
-  color: #bdbdbd;
-  padding: 0 1em;
-  white-space: nowrap;
-  line-height: 2.5em;
-  cursor: pointer;
-  transition: var(--ui-component-transition);
-}
-.template-start-menu .pane item:hover,
-.template-map-editor .left-pane item:hover {
-  background: #192533;
 }
 .template-map-editor {
   font-size: 1rem;
@@ -285,5 +317,9 @@ ui-layer > .fill-screen,
 .template-map-editor .left-pane form,
 .template-map-editor .left-pane .controls {
   padding: 1em;
+}
+.template-scenario-editor-cultures .overlay-pane {
+  width: min(95dvw, 800px);
+  max-height: 90dvh;
 }
 /*# sourceMappingURL=include.css.map */

@@ -41,7 +41,7 @@ function tile_create(override) {
     owner: 0, // playerID (0 = none)
     controller: 0, // playerID (0 = none)
 
-    prov: 0, // provinceID, 0 = central
+    gov: 0, // govID, 0 = central
     part: 0, // partID
 
     // buildings:

@@ -42,9 +42,10 @@ let gui_state_tryDispatchEvent;
       await gui_state_stop(stopIntent);
 
     await gui_state_tryDispatchEvent(newState, "init", newIntent);
-    await gui_state_tryDispatchEvent(newState, "start", newIntent);
 
     currentState = newState;
+
+    await gui_state_tryDispatchEvent(newState, "start", newIntent);
   };
 
   gui_state_stop = async function(stopIntent={}) {

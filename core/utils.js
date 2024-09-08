@@ -34,3 +34,20 @@ function sizeOf(obj, visited = new Set()) {
 function ptEq(pt1, pt2) {
   return pt1[0] == pt2[0] && pt1[1] == pt2[1];
 }
+
+function uuidv4() {
+  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+    (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+  );
+}
+
+/**
+ * Allows hooking a dynamic, runtime reference while still keeping an obj
+ * JSON-compliant
+ */
+function hook_nonenumerable_ref(obj, key, ref) {
+  Object.defineProperty(obj, key, {
+    enumerable: false,
+    value: ref
+  });
+}

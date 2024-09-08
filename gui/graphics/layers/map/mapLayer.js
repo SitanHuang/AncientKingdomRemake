@@ -5,6 +5,23 @@ class MapLayer extends Layer {
   static ZINDEX_BG = 1;
   static ZINDEX_TILELAYER = 10;
 
+  static CHROMA_SCALE_SOIL_QUALITY = chroma
+    .scale([
+      '#dec1ad',
+      'white',
+      '#fcfcc5',
+      '#c2c793',
+      '#0B6E4A',
+      '#078a1d'])
+    .domain([
+      -0.05,
+      0.2,
+      0.3,
+      0.5,
+      0.9,
+      1.3])
+    .classes(levels);
+
   mapObj;
   mapLayerCacheKey = Symbol("mapLayerInstance");
   graphicsConfig;
