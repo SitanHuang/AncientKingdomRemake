@@ -34,9 +34,6 @@ function gui_fade_away_element(ele, ms=400, target=0) {
     });
   });
 }
-function gui_crossfade_elements(oldEle, newEle, ms=400) {
-  return Promise.all([
-    gui_fade_away_element(oldEle, ms, 0),
-    gui_fade_away_element(newEle, ms, 1)
-  ]);
+function gui_crossfade_elements(oldEle, _newEle, ms=400) {
+  return gui_fade_away_element(oldEle, ms, 0);
 }

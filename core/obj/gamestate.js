@@ -15,7 +15,7 @@ function gamestate_create(override={}) {
     turnsPerProdCycle: 12,
 
     currentOrders: [],
-    currentPlayer: null,
+    currentCiv: null,
     currentGov: null,
 
     randState: true, // rand state; true = initialize

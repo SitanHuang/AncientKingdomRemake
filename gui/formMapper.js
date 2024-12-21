@@ -1,12 +1,17 @@
 function gui_forms_map_to_obj($container, obj, {
   $formObj = null, // if not null, will only commit to obj when everything is valid
   onChangeCallback = null,
+  datasets = {
+    // key: data-dataset used in <select>
+    //      [[displayText, value], ...]
+  },
 } = {}) {
   const log = Logger.get("gui.formmapper");
 
   if (!$formObj)
     log.warn('Form Obj not present');
 
+  // --- Handle <input> elements ---
   $container.find('input').each(function () {
     const $input = $(this);
     const type = $input.attr('type');
@@ -29,6 +34,8 @@ function gui_forms_map_to_obj($container, obj, {
 
     if (type === 'color') {
       $input[0].value = '#' + target[key].toString(16).padStart(6, '0');
+    } else if (type === 'checkbox') {
+      $input[0].checked = !!target[key];
     } else {
       $input[0].value = target[key];
     }
@@ -54,12 +61,69 @@ function gui_forms_map_to_obj($container, obj, {
           case 'range':
             target[key] = parseFloat(value);
             break;
+          case 'checkbox':
+            target[key] = $input[0].checked;
+            break;
           default:
             log.warn('Unsupported input type', type);
         }
 
         if (onChangeCallback)
           onChangeCallback($input, name, target, value);
+      }
+    });
+  });
+
+  // --- Handle <select> elements ---
+  $container.find('select').each(function () {
+    const $select = $(this);
+    const name = $select.attr('name');
+
+    // Handle nested properties
+    const keys = name.split(':');
+    let target = obj;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!target[keys[i]]) {
+        target[keys[i]] = {};
+      }
+      target = target[keys[i]];
+    }
+    const key = keys[keys.length - 1];
+
+    // Skip if the property is not in the object
+    if (target[key] === undefined) {
+      return;
+    }
+
+    // Populate options if data-dataset is given
+    const datasetKey = $select.data('dataset');
+    if (datasetKey && datasets[datasetKey]) {
+      // Clear out any existing options
+      $select.empty();
+
+      // $select.append($('<option>').val('').text('Select an option...'));
+
+      // Populate from datasets
+      datasets[datasetKey].forEach(([text, val]) => {
+        $select.append($('<option>').val(val).text(text));
+      });
+    }
+
+    // Initialize the select value
+    $select.val(target[key]);
+
+    // Event listener for changes on <select>
+    $select.on('change', function () {
+      if (
+        ($formObj ? $formObj[0].checkValidity() : true) &&
+        $select[0].checkValidity()
+      ) {
+        const value = $select.val();
+        target[key] = value;
+
+        if (onChangeCallback) {
+          onChangeCallback($select, name, target, value);
+        }
       }
     });
   });

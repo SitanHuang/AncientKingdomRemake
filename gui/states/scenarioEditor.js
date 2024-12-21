@@ -2,13 +2,18 @@
   // const log = Logger.get("gui.state.scenarioEditor");
   let $editorCon = $('<div></div>');
 
-  async function switchTemplate(newTemp) {
+  let gsOverrides;
+
+  function switchTemplate(newTemp) {
     let newCon = gui_get$Template(newTemp)
       .clone()
-      .appendTo($uiLayer);
-    await gui_crossfade_elements($editorCon, newCon);
-    $editorCon.remove();
+      .prependTo($uiLayer);
+    let oldCon = $editorCon;
     $editorCon = newCon;
+    return async () => {
+      await gui_crossfade_elements(oldCon, newCon);
+      oldCon.remove();
+    };
   }
 
   await gui_state_register("scenarioEditor", {
@@ -18,23 +23,84 @@
     },
     async start() {
       // TODO: create new or load gamestateObj from file
-      await gui_state_dispatchEvent("editCultures", { cultures: {} });
+      gsOverrides = { cultures: {}, civs: {} };
+      await gui_state_dispatchEvent("editCultures");
     },
     async cleanup() {
       $uiLayer.html('');
     },
 
-    async editCultures(gamestateOverride = { cultures: {} }) {
-      window.gamestateOverride = gamestateOverride
-      await switchTemplate('template-scenario-editor-cultures');
+    async editCivs() {
+      const execFade = switchTemplate('template-scenario-editor-civs');
+
+      const gen_rows = () => {
+        const $civs = $editorCon.find('.civs').html('');
+
+        for (const civId in gsOverrides.civs) {
+          const civ = gsOverrides.civs[civId];
+
+          let html = `
+          <div>
+            <form class="row">
+              <input type="hidden" name="id">
+              <div class="col-8">
+                <label>Civ Name</label>
+                <input type="text" name="name" required>
+              </div>
+              <div class="col-4">
+                <label>Color</label>
+                <input type="color" name="color" required>
+              </div>
+              <div class="col-4">
+                <label>Decreased</label>
+                <input type="checkbox" name="deceased">
+              </div>
+              <div class="col-4">
+                <label>Spawned</label>
+                <input type="checkbox" name="spawned">
+              </div>
+              <div class="col-4">
+                <label>Culture</label>
+                <select name="culture" data-dataset="cultures"></select>
+              </div>
+            </form>
+            <divider></divider>
+          </div>
+          `;
+
+          const $civ = $(html);
+          $civs.append($civ);
+
+          gui_forms_map_to_obj($civ, civ, {
+            datasets: {
+              cultures: Object.values(gsOverrides.cultures).map(culture => [
+                culture.name, culture.id
+              ])
+            }
+          });
+        }
+      };
+
+      gen_rows();
+
+      $editorCon.find('.btn-add-civ')[0].onclick = () => {
+        const civ = civ_create();
+        gsOverrides.civs[civ.id] = civ;
+        gen_rows();
+      };
+      await execFade();
+    },
+
+    async editCultures() {
+      const execFade = switchTemplate('template-scenario-editor-cultures');
 
       const blankCulture = culture_create();
 
       const gen_rows = () => {
         const $cultures = $editorCon.find('.cultures').html('');
 
-        for (const cultureId in gamestateOverride.cultures) {
-          const culture = gamestateOverride.cultures[cultureId];
+        for (const cultureId in gsOverrides.cultures) {
+          const culture = gsOverrides.cultures[cultureId];
 
           let html = `
           <div>
@@ -86,9 +152,11 @@
 
       $editorCon.find('.btn-add-culture')[0].onclick = () => {
         const culture = culture_create();
-        gamestateOverride.cultures[culture.id] = culture;
+        gsOverrides.cultures[culture.id] = culture;
         gen_rows();
       };
+
+      await execFade();
     },
   });
 })();

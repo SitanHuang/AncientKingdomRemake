@@ -20,7 +20,7 @@ class MapLayer extends Layer {
       0.5,
       0.9,
       1.3])
-    .classes(levels);
+    .classes(20);
 
   mapObj;
   mapLayerCacheKey = Symbol("mapLayerInstance");

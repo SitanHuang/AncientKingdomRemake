@@ -67,7 +67,8 @@ root ui-layer {
 /* UI Components */
 input,
 button,
-label {
+label,
+select {
   font-family: var(--input-font);
   display: block;
   width: 100%;
@@ -80,23 +81,28 @@ label {
 }
 input[disabled],
 button[disabled],
-label[disabled] {
+label[disabled],
+select[disabled] {
   cursor: not-allowed;
 }
 label {
   margin-bottom: 0;
 }
-input {
+input,
+select {
   color: var(--input-color);
   background: var(--input-bg);
 }
-input:invalid {
+input:invalid,
+select:invalid {
   outline: 2px solid red;
 }
-input:hover:not([disabled]) {
+input:hover:not([disabled]),
+select:hover:not([disabled]) {
   background: var(--input-bg-hover);
 }
-input[disabled] {
+input[disabled],
+select[disabled] {
   color: var(--input-color-disabled);
 }
 button {
@@ -213,7 +219,8 @@ ui-layer > .fill-screen,
 ui-layer .overlay-pane-con,
 .template-start-menu,
 .template-map-editor,
-.template-scenario-editor-cultures {
+.template-scenario-editor-cultures,
+.template-scenario-editor-civs {
   width: 100%;
   height: 100%;
   background: transparent;
@@ -318,7 +325,13 @@ ui-layer .overlay-pane-con .overlay-pane {
 .template-map-editor .left-pane .controls {
   padding: 1em;
 }
-.template-scenario-editor-cultures .overlay-pane {
+.template-scenario-editor-cultures,
+.template-scenario-editor-civs {
+  position: fixed;
+  top: 0;
+}
+.template-scenario-editor-cultures .overlay-pane,
+.template-scenario-editor-civs .overlay-pane {
   width: min(95dvw, 800px);
   max-height: 90dvh;
 }

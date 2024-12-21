@@ -101,7 +101,7 @@
             <item onclick="gui_state_switch('startMenu')">
               Back
             </item>
-            <item>
+            <item onclick="gui_state_dispatchEvent('editCivs')">
               Next
             </item>
           </div>
@@ -114,6 +114,31 @@
             </div>
             <divider></divider>
             <div class="cultures">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="template-scenario-editor-civs">
+      <div class="overlay-pane-con">
+        <div class="overlay-pane pane no-padding">
+          <div class="horizontal-items">
+            <item onclick="gui_state_dispatchEvent('editCultures')">
+              Back
+            </item>
+            <item>
+              Next
+            </item>
+          </div>
+          <divider></divider>
+          <div class="pad">
+            <div class="row">
+              <div class="col-2">
+                <button type="button" class="btn-add-civ">Add Civilization</button>
+              </div>
+            </div>
+            <divider></divider>
+            <div class="civs">
             </div>
           </div>
         </div>
