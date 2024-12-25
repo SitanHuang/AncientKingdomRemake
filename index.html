@@ -20,6 +20,7 @@
   <script src="core/obj/map/tile.js"></script>
   <script src="core/obj/culture.js"></script>
   <script src="core/obj/civ.js"></script>
+  <script src="core/obj/gamestate.js"></script>
   <script src="core/obj/gov/gov.js"></script>
   <script src="core/obj/stats/hist.js"></script>
   <script src="core/obj/stats/stats.js"></script>
@@ -41,6 +42,7 @@
   <script src="gui/fs/load.js"></script>
   <script src="gui/dialog.js"></script>
   <script src="gui/tooltip.js"></script>
+  <script src="gui/datePicker.js"></script>
   <script src="gui/formMapper.js"></script>
   <script src="gui/graphics/utils.js"></script>
   <script src="gui/graphics/config.js"></script>
@@ -94,11 +96,31 @@
         </item>
       </div>
     </div>
-    <div class="template-scenario-editor-cultures">
+    <div class="template-scenario-editor-load scenario-editor-pane">
       <div class="overlay-pane-con">
         <div class="overlay-pane pane no-padding">
           <div class="horizontal-items">
             <item onclick="gui_state_switch('startMenu')">
+              Back
+            </item>
+            <item onclick="gui_state_dispatchEvent('editCultures')">
+              Next
+            </item>
+          </div>
+          <divider></divider>
+          <div class="pad">
+            <button type="button" class="btn-load-preset">Load Scenario</button>
+            <divider></divider>
+            <form class="row"></form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="template-scenario-editor-cultures scenario-editor-pane">
+      <div class="overlay-pane-con">
+        <div class="overlay-pane pane no-padding">
+          <div class="horizontal-items">
+            <item onclick="gui_state_dispatchEvent('loadScenario')">
               Back
             </item>
             <item onclick="gui_state_dispatchEvent('editCivs')">
@@ -119,7 +141,7 @@
         </div>
       </div>
     </div>
-    <div class="template-scenario-editor-civs">
+    <div class="template-scenario-editor-civs scenario-editor-pane">
       <div class="overlay-pane-con">
         <div class="overlay-pane pane no-padding">
           <div class="horizontal-items">
@@ -167,6 +189,10 @@
           <div class="left-float half">
             <label>Sample</label>
             <input type="number" step="0.01" required value="0.04" name="sample">
+          </div>
+          <div class="left-float full">
+            <label>Climate Matrix</label>
+            <input type="text" required value="[[1]]" name="climate">
           </div>
           <div class="clear"></div>
           <button type="button" onclick="gui_state_dispatchEvent('onCalcPop', { $btn: $(this) })">Calculate Soil Quality</button>

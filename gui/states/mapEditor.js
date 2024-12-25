@@ -49,6 +49,12 @@
       if (!mapObj)
         return;
 
+      $controls.find('input[name="depth"], input[name="sample"], input[name="climate"]').each(function () {
+        const savedVal = mapObj["__mapEditor_" + this.name];
+
+        savedVal && (this.value = savedVal);
+      });
+
       gui_state_dispatchEvent("beginCanvas");
       $form.hide();
     },
@@ -84,8 +90,10 @@
         gui_state_dispatchEvent("onInsertBGImg", { imgURL, offsetX, offsetY, scale, alpha });
       };
 
-      $controls.find('input[name="depth"], input[name="sample"]').change(() => {
+      $controls.find('input[name="depth"], input[name="sample"], input[name="climate"]').change(function () {
         mapObj._terAuxUpToDate = false;
+
+        mapObj["__mapEditor_" + this.name] = Number(this.value) || this.value;
       });
 
       await gui_dialog_loading_end();
@@ -103,6 +111,18 @@
     },
 
     async onCalcPop({ $btn }) {
+      let climateMatrix;
+      const $climate = $controls.find('input[name="climate"]');
+
+      try {
+        climateMatrix = JSON.parse($climate.val());
+        $climate[0].setCustomValidity("");
+      } catch (e) {
+        $climate[0].setCustomValidity("Not a valid JSON array.");
+        $climate.focus();
+        return;
+      }
+
       if ($btn.hasClass("active")) {
         renderer.onTileTooltip = null;
         renderer.mapLayer.removeColorScale();
@@ -112,7 +132,7 @@
 
       await gui_dialog_loading_begin({ progress: true });
 
-      if (!mapObj._terAuxUpToDate)
+      if (!mapObj._terAuxUpToDate) {
         await terrain_recalc_soil(
           mapObj,
           {
@@ -123,8 +143,10 @@
             depth: parseFloat(
               $controls.find('input[name="depth"]').val()
             ) || undefined,
+            climateMatrix
           }
         );
+      }
 
       renderer.mapLayer.paintColorScale({
         valFunc(tile) {

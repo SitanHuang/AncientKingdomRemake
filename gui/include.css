@@ -162,6 +162,9 @@ ui-layer .overlay-pane-con .overlay-pane divider {
 .half {
   width: 50%;
 }
+.full {
+  width: 100%;
+}
 .left-float {
   float: left;
 }
@@ -219,8 +222,7 @@ ui-layer > .fill-screen,
 ui-layer .overlay-pane-con,
 .template-start-menu,
 .template-map-editor,
-.template-scenario-editor-cultures,
-.template-scenario-editor-civs {
+.scenario-editor-pane {
   width: 100%;
   height: 100%;
   background: transparent;
@@ -325,13 +327,11 @@ ui-layer .overlay-pane-con .overlay-pane {
 .template-map-editor .left-pane .controls {
   padding: 1em;
 }
-.template-scenario-editor-cultures,
-.template-scenario-editor-civs {
+.scenario-editor-pane {
   position: fixed;
   top: 0;
 }
-.template-scenario-editor-cultures .overlay-pane,
-.template-scenario-editor-civs .overlay-pane {
+.scenario-editor-pane .overlay-pane {
   width: min(95dvw, 800px);
   max-height: 90dvh;
 }

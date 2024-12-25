@@ -81,6 +81,7 @@ function terrain_modObj(key) {
 async function terrain_recalc_soil(map, {
   depth=12,
   samplePerc=0.1,
+  climateMatrix=[[1]],
   progressFunc
 }={}) {
   Logger.get("core.obj.map.terrain.terrain_recalc_soil").time("terrain_recalc_soil");
@@ -107,6 +108,7 @@ async function terrain_recalc_soil(map, {
     min: 0.05,
 
     samplePerc,
+    climateMatrix,
 
     progressFunc,
 
@@ -151,6 +153,7 @@ async function _terrain_gen_auxObj(map, {
   constant,
   min,
   samplePerc,
+  climateMatrix,
 
   progressFunc,
 }) {
@@ -161,6 +164,39 @@ async function _terrain_gen_auxObj(map, {
     avg: 0,
     count: 0,
   };
+
+  function getClimateValue(row, col) {
+    // If no matrix or empty, default to 1 (neutral multiplier).
+    if (!climateMatrix || !climateMatrix.length || !climateMatrix[0].length) {
+      return 1;
+    }
+    const CH = climateMatrix.length;
+    const CW = climateMatrix[0].length;
+
+    const rowF = (row / (map.height - 1)) * (CH - 1);
+    const colF = (col / (map.width - 1)) * (CW - 1);
+
+    const row1 = Math.floor(rowF);
+    const row2 = Math.min(row1 + 1, CH - 1);
+    const col1 = Math.floor(colF);
+    const col2 = Math.min(col1 + 1, CW - 1);
+
+    const rFrac = rowF - row1;
+    const cFrac = colF - col1;
+
+    const v11 = climateMatrix[row1][col1];
+    const v12 = climateMatrix[row1][col2];
+    const v21 = climateMatrix[row2][col1];
+    const v22 = climateMatrix[row2][col2];
+
+    // Bilinear interpolation
+    const blended = v11 * (1 - rFrac) * (1 - cFrac)
+                  + v12 * (1 - rFrac) * cFrac
+                  + v21 * rFrac       * (1 - cFrac)
+                  + v22 * rFrac       * cFrac;
+
+    return blended;
+  }
 
   for (let r = 0; r < map.height; r++) {
     for (let c = 0; c < map.width; c++) {
@@ -193,6 +229,8 @@ async function _terrain_gen_auxObj(map, {
         mod = -1 * ((-mod) ** (1 / root));
       else
         mod = mod ** (1 / root);
+
+      mod *= getClimateValue(r, c);
 
       mod = mod * scale + constant;
       mod = Math.max(min, mod);
