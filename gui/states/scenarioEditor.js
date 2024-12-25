@@ -22,12 +22,66 @@
 
     },
     async start() {
-      // TODO: create new or load gamestateObj from file
-      gsOverrides = { cultures: {}, civs: {} };
-      await gui_state_dispatchEvent("editCultures");
+      gsOverrides = gamestate_create();
+      await gui_state_dispatchEvent("loadScenario");
     },
     async cleanup() {
       $uiLayer.html('');
+    },
+
+    async loadScenario() {
+      const execFade = switchTemplate('template-scenario-editor-load');
+
+      const renderForm = () => {
+        const $form = $editorCon.find('form');
+
+        $form.html(`
+          <div class="col-12">
+            <label>Scenario Name</label>
+            <input type="text" name="name" required>
+          </div>
+          <div class="col-12">
+            <label>Begin Date</label>
+            <input type="canonical-date" name="beginStamp" required>
+          </div>
+          <div class="col-6">
+            <label>Weeks per Turn</label>
+            <input type="number" name="weeksPerTurn" required min="1" step="1">
+          </div>
+          <div class="col-6">
+            <label>Turns per Production Cycle</label>
+            <input type="number" name="turnsPerProdCycle" required min="1" step="1">
+          </div>
+        `);
+
+        gui_forms_map_to_obj($form, gsOverrides);
+      };
+
+      $editorCon.find('.btn-load-preset')[0].onclick = async () => {
+        const scenarioObj = (await fs_prompt_load_obj()) || null;
+
+        if (!scenarioObj)
+          return;
+
+        gsOverrides = scenarioObj;
+        renderForm();
+      };
+
+      renderForm();
+
+      execFade();
+    },
+
+    async finishEditing() {
+      const execFade = switchTemplate('template-scenario-editor-finish');
+
+      const fname = gsOverrides.name.replace(/(\s+)|([^a-zA-Z0-9-_\.])|(^[-_]+|[-_]+$)/g, '');
+
+      $editorCon.find('.btn-save-scenario')[0].onclick = async () => {
+        await fs_prompt_serialize_obj(gsOverrides, { fname: "scenario_" + fname });
+      };
+
+      await execFade();
     },
 
     async editCivs() {

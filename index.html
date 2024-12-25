@@ -130,7 +130,7 @@
           <divider></divider>
           <div class="pad">
             <div class="row">
-              <div class="col-2">
+              <div class="col-4">
                 <button type="button" class="btn-add-culture">Add Culture</button>
               </div>
             </div>
@@ -148,19 +148,41 @@
             <item onclick="gui_state_dispatchEvent('editCultures')">
               Back
             </item>
-            <item>
+            <item onclick="gui_state_dispatchEvent('finishEditing')">
               Next
             </item>
           </div>
           <divider></divider>
           <div class="pad">
             <div class="row">
-              <div class="col-2">
+              <div class="col-4">
                 <button type="button" class="btn-add-civ">Add Civilization</button>
               </div>
             </div>
             <divider></divider>
             <div class="civs">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="template-scenario-editor-finish scenario-editor-pane">
+      <div class="overlay-pane-con">
+        <div class="overlay-pane pane no-padding">
+          <div class="horizontal-items">
+            <item onclick="gui_state_dispatchEvent('editCivs')">
+              Back
+            </item>
+            <item onclick="gui_state_switch('startMenu')">
+              Exit →
+            </item>
+          </div>
+          <divider></divider>
+          <div class="pad">
+            <div class="row">
+              <div class="col-4">
+                <button type="button" class="btn-save-scenario">Save Scenario to File</button>
+              </div>
             </div>
           </div>
         </div>

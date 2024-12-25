@@ -6,8 +6,10 @@ function gamestate_create(override={}) {
     cultures: {},
     civs: {},
 
-    beginStamp: 0,
-    currentStamp: 0,
+    name: 'Scenario',
+
+    beginStamp: -62167132800000, // 0000-01-02
+    currentStamp: null,
 
     turns: 0,
     weeksPerTurn: 1,
@@ -15,6 +17,7 @@ function gamestate_create(override={}) {
     turnsPerProdCycle: 12,
 
     currentOrders: [],
+    currentOrderInd: 0,
     currentCiv: null,
     currentGov: null,
 
