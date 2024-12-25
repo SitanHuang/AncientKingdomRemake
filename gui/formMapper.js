@@ -5,8 +5,11 @@ function gui_forms_map_to_obj($container, obj, {
     // key: data-dataset used in <select>
     //      [[displayText, value], ...]
   },
+  autoInitCanonicalDatepicker = true,
 } = {}) {
   const log = Logger.get("gui.formmapper");
+
+  const datePicker = autoInitCanonicalDatepicker ? new CanonicalDatePicker() : null;
 
   if (!$formObj)
     log.warn('Form Obj not present');
@@ -36,6 +39,21 @@ function gui_forms_map_to_obj($container, obj, {
       $input[0].value = '#' + target[key].toString(16).padStart(6, '0');
     } else if (type === 'checkbox') {
       $input[0].checked = !!target[key];
+    } else if (type === 'date') {
+      const d = new Date(target[key]);
+      const year = d.getFullYear().toString().padStart(4, '0');
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const day = d.getDate().toString().padStart(2, '0');
+      $input[0].value = `${year}-${month}-${day}`;
+    } else if (type === 'canonical-date') {
+      const d = new Date(target[key]);
+      const year = d.getFullYear().toString().padStart(4, '0');
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const day = d.getDate().toString().padStart(2, '0');
+
+      datePicker && datePicker.init([$input[0]]);
+
+      $input[0]._CanonicalDatePicker.updateValue($input[0], `${month}/${day}/${year}`);
     } else {
       $input[0].value = target[key];
     }
@@ -63,6 +81,12 @@ function gui_forms_map_to_obj($container, obj, {
             break;
           case 'checkbox':
             target[key] = $input[0].checked;
+            break;
+          case 'date':
+            target[key] = value ? $input[0].valueAsNumber : 0;
+            break;
+          case 'canonical-date':
+            target[key] = value ? $input[0]._valueAsNumber : 0;
             break;
           default:
             log.warn('Unsupported input type', type);
