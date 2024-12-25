@@ -20,6 +20,34 @@
     box-shadow: var(--pane-box-shadow);
   }
 
+  .dialog-box {
+    &:extend(.overlay .center-box);
+
+    max-width: min(90vw, 500px);
+    width: 100%;
+    max-height: 95dvh;
+
+    border-radius: 4px;
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    padding: 0;
+
+    .dialog-text {
+      font-size: 1.5rem;
+      text-align: left;
+      border-radius: 4px;
+    }
+
+    .dialog-text, .input-con {
+      &:extend(.pad);
+    }
+
+    &.wide {
+      max-width: 90vw;
+    }
+  }
+
   .loading-box {
     &:extend(.overlay .center-box);
 

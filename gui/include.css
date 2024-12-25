@@ -129,6 +129,8 @@ button[disabled] {
 }
 .pad,
 .pane,
+.overlay .dialog-box .dialog-text,
+.overlay .dialog-box .input-con,
 ui-layer .overlay-pane-con .overlay-pane {
   padding: 1em;
 }
@@ -253,11 +255,29 @@ ui-layer .overlay-pane-con .overlay-pane {
   display: grid;
 }
 .overlay .center-box,
+.overlay .dialog-box,
 .overlay .loading-box {
   place-self: center;
   color: var(--pane-color);
   background-color: var(--pane-bg);
   box-shadow: var(--pane-box-shadow);
+}
+.overlay .dialog-box {
+  max-width: min(90vw, 500px);
+  width: 100%;
+  max-height: 95dvh;
+  border-radius: 4px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 0;
+}
+.overlay .dialog-box .dialog-text {
+  font-size: 1.5rem;
+  text-align: left;
+  border-radius: 4px;
+}
+.overlay .dialog-box.wide {
+  max-width: 90vw;
 }
 .overlay .loading-box {
   padding: 2em 4em;

@@ -62,6 +62,7 @@
   <script src="gui/states/startMenu.js"></script>
   <script src="gui/states/mapEditor.js"></script>
   <script src="gui/states/scenarioEditor.js"></script>
+  <script src="gui/states/gameLoader.js"></script>
 
   <link rel="stylesheet" href="gui/ext/normalize.css">
   <link rel="stylesheet" href="gui/ext/simple-grid.min.css">
@@ -74,7 +75,23 @@
   </root>
   <templates>
     <div class="template-tooltip-con"></div>
-    <div class="template-loading-box overlay cursor-wait">
+    <div class="template-dialog-box overlay" tabindex="-1">
+      <div class="dialog-box pane">
+        <div class="dialog-text"></div>
+        <div class="input-con">
+          <input type="text" autocomplete="off">
+        </div>
+        <div class="horizontal-items">
+          <item class="cancel">
+            Cancel
+          </item>
+          <item class="confirm">
+            Confirm
+          </item>
+        </div>
+      </div>
+    </div>
+    <div class="template-loading-box overlay cursor-wait" tabindex="-1">
       <div class="loading-box">
         <div class="loading-text">Loading...</div>
         <div class="progress-con" style="display: none">
@@ -85,6 +102,9 @@
     <div class="template-start-menu">
       <div class="pane">
         <h1>AKR</h1>
+        <item onclick="gui_state_switch('gameLoader')">
+          Game Creator
+        </item>
         <item onclick="gui_state_switch('scenarioEditor')">
           Scenario Editor
         </item>
@@ -94,6 +114,24 @@
         <item>
           Exit
         </item>
+      </div>
+    </div>
+    <div class="template-game-loader scenario-editor-pane">
+      <div class="overlay-pane-con">
+        <div class="overlay-pane pane no-padding">
+          <div class="pad">
+            <button type="button" class="btn-load-map">Load Map</button>
+            <button type="button" class="btn-load-preset">Load Scenario</button>
+          </div>
+          <div class="horizontal-items">
+            <item onclick="gui_state_switch('startMenu')">
+              Back
+            </item>
+            <item onclick="gui_state_dispatchEvent('startGame')">
+              Start Game
+            </item>
+          </div>
+        </div>
       </div>
     </div>
     <div class="template-scenario-editor-load scenario-editor-pane">
