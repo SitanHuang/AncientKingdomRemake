@@ -15,9 +15,11 @@
   .center-box {
     place-self: center;
 
-    color: var(--pane-color);
-    background-color: var(--pane-bg);
-    box-shadow: var(--pane-box-shadow);
+    &:not(.pane) {
+      color: var(--pane-color);
+      background-color: var(--pane-bg);
+      box-shadow: var(--pane-box-shadow);
+    }
   }
 
   .dialog-box {
@@ -34,7 +36,7 @@
     padding: 0;
 
     .dialog-text {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       text-align: left;
       border-radius: 4px;
     }

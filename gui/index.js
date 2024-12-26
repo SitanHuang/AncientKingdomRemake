@@ -11,5 +11,3 @@ function gui_get$Template(id) {
 }
 
 gui_state_init("gameLoader");
-
-gui_dialog_alert("123");

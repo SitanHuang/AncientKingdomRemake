@@ -5,6 +5,9 @@
   --pane-color: white;
   --pane-bg: #171a21;
   --pane-box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.75);
+  --bg-success: #1d4219;
+  --bg-warning: #4b3c20;
+  --bg-error: #4b2121;
   --input-color: white;
   --input-color-disabled: rgba(255, 255, 255, 0.7);
   --input-bg: #32353c;
@@ -84,6 +87,30 @@ button[disabled],
 label[disabled],
 select[disabled] {
   cursor: not-allowed;
+}
+input[data-status="success"],
+button[data-status="success"],
+label[data-status="success"],
+select[data-status="success"],
+.pane[data-status="success"],
+ui-layer .overlay-pane-con .overlay-pane[data-status="success"] {
+  background-color: var(--bg-success);
+}
+input[data-status="warning"],
+button[data-status="warning"],
+label[data-status="warning"],
+select[data-status="warning"],
+.pane[data-status="warning"],
+ui-layer .overlay-pane-con .overlay-pane[data-status="warning"] {
+  background-color: var(--bg-warning);
+}
+input[data-status="error"],
+button[data-status="error"],
+label[data-status="error"],
+select[data-status="error"],
+.pane[data-status="error"],
+ui-layer .overlay-pane-con .overlay-pane[data-status="error"] {
+  background-color: var(--bg-error);
 }
 label {
   margin-bottom: 0;
@@ -258,6 +285,8 @@ ui-layer .overlay-pane-con .overlay-pane {
 .overlay .dialog-box,
 .overlay .loading-box {
   place-self: center;
+}
+.overlay .center-box:not(.pane) {
   color: var(--pane-color);
   background-color: var(--pane-bg);
   box-shadow: var(--pane-box-shadow);
@@ -272,7 +301,7 @@ ui-layer .overlay-pane-con .overlay-pane {
   padding: 0;
 }
 .overlay .dialog-box .dialog-text {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: left;
   border-radius: 4px;
 }

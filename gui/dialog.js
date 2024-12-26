@@ -58,6 +58,7 @@ let gui_dialog_prompt;
 
   gui_dialog_raise = async function({
     message = "",
+    status = "normal", // "normal" / "error" / "warning" / "success"
     cancel = true,
     wide = false,
     cancelTxt = "Cancel",
@@ -72,7 +73,9 @@ let gui_dialog_prompt;
     $box?.remove();
     $box = gui_get$Template('template-dialog-box').clone().appendTo($uiLayer);
 
-    $box.find('.dialog-box').toggleClass('wide', !!wide);
+    $box.find('.dialog-box')
+      .toggleClass('wide', !!wide)
+      .attr("data-status", status);
 
     $box.find("item.cancel").toggle(!!cancel);
 

@@ -61,6 +61,18 @@ input, button, label, select {
   }
 }
 
+input, button, label, select, .pane {
+  &[data-status="success"] {
+    background-color: var(--bg-success);
+  }
+  &[data-status="warning"] {
+    background-color: var(--bg-warning);
+  }
+  &[data-status="error"] {
+    background-color: var(--bg-error);
+  }
+}
+
 label {
   margin-bottom: 0;
 }
