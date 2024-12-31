@@ -11,6 +11,7 @@ class Viewport {
 
   #onHoverCallbacks = new Map();
   #onBrushCallbacks = new Map();
+  #onClickCallbacks = new Map();
 
   #pointersDown = [];
 
@@ -104,11 +105,17 @@ class Viewport {
   registerOnBrush(id, callback) {
     this.#onBrushCallbacks.set(id, callback);
   }
+  registerOnClick(id, callback) {
+    this.#onClickCallbacks.set(id, callback);
+  }
   removeOnHover(id) {
     this.#onHoverCallbacks.delete(id);
   }
   removeOnBrush(id) {
     this.#onBrushCallbacks.delete(id);
+  }
+  removeOnClick(id) {
+    this.#onClickCallbacks.delete(id);
   }
 
   beginBrush() {
@@ -287,6 +294,28 @@ class Viewport {
     ) {
       // hand over interactivity back to children
       this.container.eventMode = 'passive';
+    }
+
+    // If no more pointers are down and we didn't pinch or pan
+    // we consider either a 'click' or a single 'brush' action.
+    if (
+      oldEvent &&
+      this.#pointersDown.length === 0 &&
+      !this.#pinchInProgress && !this.#panInProgress
+    ) {
+      const localPt = this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY));
+
+       if (this.#brushInProgress) {
+        // If in brush mode, interpret click as a brush action
+        this.#onBrushCallbacks.forEach((callback) => {
+          callback(localPt, event);
+        });
+      } else {
+        // Otherwise, it's a normal "click"
+        this.#onClickCallbacks.forEach((callback) => {
+          callback(localPt, event);
+        });
+      }
     }
 
     this.#pinchInProgress = false;
