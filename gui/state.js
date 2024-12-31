@@ -60,8 +60,10 @@ let gui_state_tryDispatchEvent;
   gui_state_tryDispatchEvent = async function(state, eventName, intent = {}) {
     log.info("Dispatching event " + eventName + " to state " + state);
 
+    const stateObj = STATE_REGISTRY.get(state);
+
     const handler = STATE_REGISTRY.get(state)[eventName];
     if (handler)
-      await handler(intent);
+      await handler.bind(stateObj)(intent);
   }
 })();
