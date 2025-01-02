@@ -24,3 +24,22 @@ function civ_create(override) {
 
   return Object.assign(civ, override);
 }
+
+function civ_central_gov(civ) {
+  return civ.govs.c;
+}
+
+function civ_get_govs_list(civ) {
+  const govs = Object.values(civ.govs);
+
+  if (!govs.length) {
+    civ_set_gov(civ, gov_create_central(civ));
+    return civ_get_govs_list(civ);
+  }
+
+  return govs;
+}
+
+function civ_set_gov(civ, gov) {
+  civ.govs[gov.id] = gov;
+}

@@ -4,4 +4,6 @@ Logger.useDefaults();
 Logger.setLevel(Logger.TRACE);
 // Logger.get("gui.state").setLevel(Logger.TRACE);
 
-GLOBAL_DEBUG_FLAG = true;
+const searchParams = new URLSearchParams(location.search);
+
+GLOBAL_DEBUG_FLAG = searchParams.has("debug") ? !!eval(searchParams.get("debug")) : true;

@@ -2,9 +2,13 @@
   --ui-font: Arial, Helvetica, sans-serif;
   --ui-font-mono: Consolas, Monaco, 'Courier New', monospace;
   --input-font: var(--ui-font);
+  --font-color-white: white;
+  --font-color-black: #262626;
   --pane-color: white;
   --pane-bg: #171a21;
   --pane-box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.75);
+  --divider-color: #000000;
+  --divider-border-color: #2f3138;
   --bg-success: #1d4219;
   --bg-warning: #4b3c20;
   --bg-error: #4b2121;
@@ -23,6 +27,9 @@
   --button-box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.1);
   --button-box-shadow-active: inset 0 -2px 0 0px var(--input-bg);
   --ui-component-transition: all 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.bx {
+  line-height: unset;
 }
 :root,
 html,
@@ -68,10 +75,15 @@ root ui-layer {
   background: transparent !important;
 }
 /* UI Components */
+.button {
+  cursor: pointer;
+  pointer-events: auto;
+}
 input,
 button,
 label,
-select {
+select,
+.button {
   font-family: var(--input-font);
   display: block;
   width: 100%;
@@ -93,6 +105,7 @@ button[data-status="success"],
 label[data-status="success"],
 select[data-status="success"],
 .pane[data-status="success"],
+.button[data-status="success"],
 ui-layer .overlay-pane-con .overlay-pane[data-status="success"] {
   background-color: var(--bg-success);
 }
@@ -101,6 +114,7 @@ button[data-status="warning"],
 label[data-status="warning"],
 select[data-status="warning"],
 .pane[data-status="warning"],
+.button[data-status="warning"],
 ui-layer .overlay-pane-con .overlay-pane[data-status="warning"] {
   background-color: var(--bg-warning);
 }
@@ -109,6 +123,7 @@ button[data-status="error"],
 label[data-status="error"],
 select[data-status="error"],
 .pane[data-status="error"],
+.button[data-status="error"],
 ui-layer .overlay-pane-con .overlay-pane[data-status="error"] {
   background-color: var(--bg-error);
 }
@@ -132,7 +147,8 @@ input[disabled],
 select[disabled] {
   color: var(--input-color-disabled);
 }
-button {
+button,
+.button {
   color: var(--button-color);
   background: var(--button-bg);
   box-shadow: var(--button-box-shadow);
@@ -158,11 +174,13 @@ button[disabled] {
 .pane,
 .overlay .dialog-box .dialog-text,
 .overlay .dialog-box .input-con,
-ui-layer .overlay-pane-con .overlay-pane {
+ui-layer .overlay-pane-con .overlay-pane,
+.template-game-ui-container .top-toolbar {
   padding: 1em;
 }
 .pane,
-ui-layer .overlay-pane-con .overlay-pane {
+ui-layer .overlay-pane-con .overlay-pane,
+.template-game-ui-container .top-toolbar {
   font-size: 1rem;
   color: var(--pane-color);
   background: var(--pane-bg);
@@ -173,6 +191,7 @@ ui-layer .overlay-pane-con .overlay-pane {
 ui-layer .overlay-pane-con .overlay-pane.no-padding,
 .template-start-menu .pane,
 .template-map-editor .left-pane,
+.template-game-ui-container .top-toolbar,
 .template-start-menu ui-layer .overlay-pane-con .overlay-pane {
   padding: 0;
 }
@@ -181,8 +200,8 @@ ui-layer .overlay-pane-con .overlay-pane divider {
   display: block;
   width: 100%;
   height: 2px;
-  background: #000000;
-  border-top: 1px solid #2f3138;
+  background: var(--divider-color);
+  border-top: 1px solid var(--divider-border-color);
 }
 /* Helpers */
 .monospace {
@@ -383,5 +402,67 @@ ui-layer .overlay-pane-con .overlay-pane {
 .scenario-editor-pane .overlay-pane {
   width: min(95dvw, 800px);
   max-height: 90dvh;
+}
+.template-game-ui-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--pane-bg);
+}
+.template-game-ui-container .top-toolbar {
+  pointer-events: auto;
+  position: fixed;
+  top: 0;
+  display: flex;
+  font-size: 1.25rem;
+  height: 2em;
+  line-height: 2em;
+  overflow: hidden;
+}
+.template-game-ui-container .top-toolbar.left {
+  left: 0px;
+  border-radius: 0 0 0.5em;
+}
+.template-game-ui-container .top-toolbar.right {
+  right: 0px;
+  border-radius: 0 0 0 0.5em;
+}
+.template-game-ui-container .top-toolbar item {
+  padding: 0 0.5em;
+  margin: 0;
+  height: inherit;
+  overflow: hidden;
+  width: auto;
+  display: flex;
+}
+.template-game-ui-container .top-toolbar item:not(.first-child) {
+  border-left: 2px solid #2f3138;
+}
+.template-game-ui-container .top-toolbar item.banner .gov {
+  opacity: 0.8;
+}
+.template-game-ui-container .top-toolbar item.date {
+  font-family: var(--ui-font-mono);
+}
+.template-game-ui-container .top-toolbar item.button {
+  cursor: pointer;
+  pointer-events: auto;
+  background-color: var(--button-bg);
+  transition: var(--ui-component-transition);
+  box-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0);
+}
+.template-game-ui-container .top-toolbar item.button:hover:not([disabled]):not(.active):not(:active),
+.template-game-ui-container .top-toolbar item.button.hover:not(.active):not(:active) {
+  box-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0.1);
+}
+.template-game-ui-container .top-toolbar item.button:active:not([disabled]),
+.template-game-ui-container .top-toolbar item.button.active {
+  box-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0.2);
+}
+.template-game-ui-container .top-toolbar item.end-turn {
+  background-color: var(--bg-success);
 }
 /*# sourceMappingURL=include.css.map */

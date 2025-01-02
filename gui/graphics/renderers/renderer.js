@@ -33,6 +33,7 @@ class Renderer {
     document.body.appendChild(this.stats.dom);
     this.stats.dom.style.left = null;
     this.stats.dom.style.right = 0;
+    this.stats.dom.style.top = '48px';
   }
 
   async init(_intent={}) {

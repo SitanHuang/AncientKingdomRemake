@@ -10,4 +10,4 @@ function gui_get$Template(id) {
   return $(gui_getTemplate(id));
 }
 
-gui_state_init("gameLoader");
+gui_state_init("startMenu");

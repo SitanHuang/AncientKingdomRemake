@@ -3,7 +3,9 @@ class MapRenderer extends Renderer {
 
   graphicsConfig = new AKRGraphicsConfig();
   viewport;
-  mapObj;
+
+  gamestate; // pointer to gamestate in memory (optional)
+  mapObj; // pointer to gamestate.map in memory
 
   /**
    * A callback on pointerenter to return true when tile should display a hover
@@ -22,9 +24,10 @@ class MapRenderer extends Renderer {
 
   mapLayer;
 
-  async begin({ mapObj }) {
+  async begin({ gamestate, mapObj }) {
     await super.begin();
 
+    this.gamestate = gamestate;
     this.mapObj = mapObj;
 
     const app = this.app;

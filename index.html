@@ -24,6 +24,10 @@
   <script src="core/obj/gov/gov.js"></script>
   <script src="core/obj/stats/hist.js"></script>
   <script src="core/obj/stats/stats.js"></script>
+  <script src="core/obj/stats/tab.js"></script>
+  <script src="core/api/index.js"></script>
+  <script src="core/api/loop.js"></script>
+  <script src="core/api/response.js"></script>
 
   <!-- UI: External -->
   <script src="gui/ext/jquery-3.7.1.min.js"></script>
@@ -63,9 +67,12 @@
   <script src="gui/states/mapEditor.js"></script>
   <script src="gui/states/scenarioEditor.js"></script>
   <script src="gui/states/gameLoader.js"></script>
+  <script src="gui/states/game_controller/gameController.js"></script>
+  <script src="gui/states/game_controller/uiManager.js"></script>
 
   <link rel="stylesheet" href="gui/ext/normalize.css">
   <link rel="stylesheet" href="gui/ext/simple-grid.min.css">
+  <link rel="stylesheet" href="gui/ext/boxicons/css/boxicons.min.css">
   <link rel="stylesheet" href="gui/include.css">
 </head>
 <body>
@@ -114,6 +121,20 @@
         <item>
           Exit
         </item>
+      </div>
+    </div>
+    <div class="template-game-ui-container">
+      <div class="top-toolbar left">
+        <item class="button"><i class='bx bx-menu'></i></item>
+        <item class="banner">
+          <span class="civ"></span>
+          <i class='bx bx-chevron-right'></i>
+          <span class="gov"></span>
+        </item>
+      </div>
+      <div class="top-toolbar right">
+        <item class="date">January 2, 1400 BCE</item>
+        <item class="end-turn button"><i class='bx bx-play'></i></item>
       </div>
     </div>
     <div class="template-game-loader scenario-editor-pane">
@@ -293,5 +314,6 @@
   </assets>
   <!-- Boot -->
   <script src="gui/index.js"></script>
+  <script src="gui/debug.js"></script>
 </body>
 </html>

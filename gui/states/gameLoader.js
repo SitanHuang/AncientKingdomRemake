@@ -71,7 +71,10 @@
         await gui_dialog_alert("Please load both map and scenario files to create a new game.", { status: "error" });
         return;
       }
-      await gui_state_switch('gameController');
+
+      scenarioObj.map = mapObj;
+
+      await gui_state_switch('gameController', { scenarioObj });
     },
   });
 })();
