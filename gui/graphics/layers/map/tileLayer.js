@@ -1,9 +1,14 @@
 class TileLayer extends Layer {
   static ZINDEX_HOVER_OVERLAY = 1000;
+  static ZINDEX_NONSELECTABLE_OVERLAY = 900;
+
   static ZINDEX_TERRAIN_SQUARE = 50;
   static ZINDEX_COLOR_LAYER = 20;
   static ZINDEX_OCCUPIER_SQUARE = 20;
   static ZINDEX_OWNER_SQUARE = 10;
+
+  gamestate;
+  mapObj;
 
   pt;
   mapLayer;
@@ -12,6 +17,7 @@ class TileLayer extends Layer {
 
   colorScaleSquare;
 
+  nonselectableOverlay;
   hoverOverlay;
 
   constructor({ renderer, container, pt, mapLayer }) {
@@ -19,6 +25,9 @@ class TileLayer extends Layer {
 
     this.pt = pt;
     this.mapLayer = mapLayer;
+
+    this.gamestate = mapLayer.gamestate;
+    this.mapObj = mapLayer.mapObj;
   }
 
   get tileObj() {
@@ -53,14 +62,6 @@ class TileLayer extends Layer {
     this.tileContainer.hitArea = hitArea;
     this.tileContainer.zIndex = MapLayer.ZINDEX_TILELAYER;
 
-    // Hover overlay effect
-    const destroyHoverOverlay = () => {
-      if (this.hoverOverlay) {
-        this.hoverOverlay.destroy({ context: false });
-        this.hoverOverlay = null;
-      }
-    };
-
     this.container.addChild(this.tileContainer);
 
     this.tileContainer.eventMode = 'dynamic';
@@ -70,6 +71,8 @@ class TileLayer extends Layer {
     gui_graphics_tile_drawcolor(this, this.tileContainer, tileObj);
 
     await gui_graphics_tile_drawterrain(this, this.tileContainer, tileObj);
+
+    this.createNonselectableOverlay();
   }
 
   destroyHoverOverlay()  {
@@ -77,6 +80,40 @@ class TileLayer extends Layer {
       this.hoverOverlay.destroy({ context: false });
       this.hoverOverlay = null;
     }
+  }
+
+  createNonselectableOverlay() {
+    if (this.nonselectableOverlay) {
+      this.nonselectableOverlay.destroy({ context: false });
+      this.nonselectableOverlay = null;
+    }
+
+    this.nonselectableOverlay = new PIXI.Graphics(this.cacheManager.getFreshObjOrReplace((orig) => {
+      if (orig) {
+        orig.destroy(true);
+      }
+
+      Logger.get("gui.graphics.layers.tilelayer").warn('redrawing nonselectablebackdrop');
+
+      orig = new PIXI.GraphicsContext();
+      orig.rect(0, 0, this.TILE_SIZE, this.TILE_SIZE);
+      orig.fill(...this.graphicsConfig.TILE_NONSELECTABLE_BG);
+
+      return orig;
+    }, this.mapLayer.mapLayerCacheKey, "tileNonselectableBackdrop"));
+
+    this.nonselectableOverlay.zIndex = TileLayer.ZINDEX_NONSELECTABLE_OVERLAY;
+    this.nonselectableOverlay.eventMode = 'none';
+
+    // We might be called to re-render a dirty tile in the middle
+    // of a selection process.
+    this.nonselectableOverlay.visible = (
+      this.renderer.selectionStarted ?
+        !this.renderer.selectableMask[this.pt[0]][this.pt[1]] :
+        false
+    );
+
+    this.tileContainer.addChild(this.nonselectableOverlay);
   }
 
   createHoverOverlay() {

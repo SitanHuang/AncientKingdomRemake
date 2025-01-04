@@ -22,6 +22,7 @@ class MapLayer extends Layer {
       1.3])
     .classes(20);
 
+  gamestate; // optional
   mapObj;
   mapLayerCacheKey = Symbol("mapLayerInstance");
   graphicsConfig;
@@ -80,6 +81,14 @@ class MapLayer extends Layer {
     });
   }
 
+  // leave mask undefined to remove mask
+  applySelectableMask(mask) {
+    this.iterateTileLayers(tile => {
+      const [row, col] = tile.pt;
+      tile.nonselectableOverlay.visible = mask ? !mask[row][col] : false;
+    });
+  }
+
   iterateTileLayers(callback) {
     this.log.time("iterateTileLayers");
     this.cacheManager.iterateAllChildren(obj => {
@@ -101,8 +110,9 @@ class MapLayer extends Layer {
       coor[1] > this.mapObj.width ? null : coor;
   }
 
-  async init({ mapObj, graphicsConfig }) {
+  async init({ mapObj, gamestate=null, graphicsConfig }) {
     this.mapObj = mapObj;
+    this.gamestate = gamestate;
     this.graphicsConfig = graphicsConfig;
     this.cacheManager.deleteContainer(this.mapLayerCacheKey);
   }
@@ -188,6 +198,8 @@ class MapLayer extends Layer {
     // On hover:
     let _oldTile = null;
     let _drawTooltip = null;
+    let _cursorType = null;
+
     viewport.registerOnHover("mapLayer", (pt, event) => {
       _oldTile?.destroyHoverOverlay();
       _oldTile = null;
@@ -198,6 +210,8 @@ class MapLayer extends Layer {
 
       if (this.renderer.onTileHoverOverlay && this.renderer.onTileHoverOverlay(coor))
         _oldTile?.createHoverOverlay();
+      if (this.renderer.onCursorType && (_cursorType = this.renderer.onCursorType(coor)))
+        this.renderer.applyCursor(_cursorType);
 
       if (this.renderer.onTileTooltip) {
         if (!sameTile) {

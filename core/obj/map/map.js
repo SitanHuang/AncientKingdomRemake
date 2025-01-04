@@ -40,6 +40,14 @@ function map_create({ width, height }) {
   return map;
 }
 
+function map_mask_create(map, defValue) {
+  const rows = Array(map.tiles.length);
+  for (let i = 0;i < rows.length;i++) {
+    rows[i] = Array(map.tiles[0].length).fill(defValue);
+  }
+  return rows;
+}
+
 function map_set_dirty_tile(map, [row, col]) {
   // TODO: stub
 }
