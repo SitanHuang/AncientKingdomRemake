@@ -27,7 +27,8 @@ class GameControllerUIManager {
   }
 
   async renderHeader() {
-    const [ civ, gov ] = [ this.currentCiv, this.currentGov ];
+    const [ civ, gov, gs ] = [ this.currentCiv, this.currentGov, this.gameState ];
+
     this.$toolbarLeft.find('.banner')
       .css('color', gui_calc_font_color(civ.color))
       .css('background-color', gui_hex_to_color(civ.color))
@@ -42,8 +43,15 @@ class GameControllerUIManager {
       this.gameController.endTurn();
     };
 
-    this.$toolbarRight.find('.date')
-      .text(gui_format_datestring(this.gameState.currentStamp));
+    gui_tooltip_set(
+      this.$toolbarRight.find('.date')
+        .text(gui_format_datestring(gs.currentStamp)),
+      `
+      <b>Turns: </b>${gs.turns}<br>
+      <b>Production cycle: </b>${gs.turns % gs.turnsPerProdCycle} / ${gs.turnsPerProdCycle}
+      `,
+      { type: 'html' }
+    );
     // TODO: show via tooltip how many cycles left
   }
 
