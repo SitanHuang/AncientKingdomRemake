@@ -48,11 +48,21 @@ function map_mask_create(map, defValue) {
   return rows;
 }
 
+function map_mask_at(mask, coor) {
+  if (coor?.length != 2)
+    return;
+  const [row, col] = coor;
+  return mask[row] && mask[row][col];
+}
+
 function map_set_dirty_tile(map, [row, col]) {
   // TODO: stub
 }
 
-function map_at(map, [row, col]) {
+function map_at(map, coor) {
+  if (coor?.length != 2)
+    return;
+  const [row, col] = coor;
   return map.tiles[row] && map.tiles[row][col];
 }
 
@@ -88,6 +98,21 @@ function map_del(map, [row, col]) {
 function map_instant_neighbors(map, [r, c], callback) {
   let tmp;
 
+  (tmp = map_at(map, [r - 1, c])) && callback(tmp);
+  (tmp = map_at(map, [r + 1, c])) && callback(tmp);
+  (tmp = map_at(map, [r, c - 1])) && callback(tmp);
+  (tmp = map_at(map, [r, c + 1])) && callback(tmp);
+}
+
+/**
+ * UNOPTIMIZED
+ *
+ * Iterates neighbors instantly (without using cache)
+ */
+function map_instant_neighbors_and_self(map, [r, c], callback) {
+  let tmp;
+
+  (tmp = map_at(map, [r, c])) && callback(tmp);
   (tmp = map_at(map, [r - 1, c])) && callback(tmp);
   (tmp = map_at(map, [r + 1, c])) && callback(tmp);
   (tmp = map_at(map, [r, c - 1])) && callback(tmp);

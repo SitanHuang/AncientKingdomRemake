@@ -17,6 +17,9 @@ class TileLayer extends Layer {
 
   colorScaleSquare;
 
+  // the color of the border when a tile is selected (falsy if unselected)
+  selectionBorderColor;
+
   nonselectableOverlay;
   hoverOverlay;
 

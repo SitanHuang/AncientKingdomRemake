@@ -11,6 +11,7 @@ class AKRGraphicsConfig {
   TILE_TERRAIN_TINT = 0x2e2e2e;
 
   TILE_GAP_PX = 2;
+  TILE_BORDER_SELECTED_PX = 2;
 
   MAP_GRID = false;
   MAP_BG = 0x50647D;

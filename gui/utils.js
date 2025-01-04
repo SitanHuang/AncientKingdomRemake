@@ -45,6 +45,13 @@ function gui_calc_font_color(hex) {
   const brightness = (r * 299 + g * 587 + b * 114) / 1000;
   return brightness > 128 ? 'var(--font-color-black)' : 'var(--font-color-white)';
 }
+function gui_calc_font_color_hex(hex) {
+  const r = (hex >> 16) & 0xff;
+  const g = (hex >> 8) & 0xff;
+  const b = hex & 0xff;
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 128 ? 0x000000 : 0xffffff;
+}
 
 function gui_hex_to_color(hex) {
   return '#' + hex.toString(16).padStart(6, '0');

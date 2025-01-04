@@ -92,6 +92,10 @@ function tile_id_from_pt(row, col) {
   return row * MAP_MAX_LENGTH + col;
 }
 
+function tile_get_owner(gs, tile) {
+  return gs?.civs[tile?.owner];
+}
+
 function tile_pt_from_id(id) {
   const row = Math.floor(id / MAP_MAX_LENGTH);
   const col = id % MAP_MAX_LENGTH;

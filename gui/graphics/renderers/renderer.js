@@ -49,7 +49,8 @@ class Renderer {
     this.ticker.add((time) => {
       this.tickerPerformUpdate(time);
     });
-    this.ticker.maxFPS = GLOBAL_DEBUG_FLAG ? 60 : 0;
+    // this.ticker.maxFPS = GLOBAL_DEBUG_FLAG ? 60 : 0;
+    this.ticker.maxFPS = 0;
 
     if (GLOBAL_DEBUG_FLAG) {
       this.showStats();

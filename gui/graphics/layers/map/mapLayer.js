@@ -205,6 +205,7 @@ class MapLayer extends Layer {
       _oldTile = null;
 
       const coor = this.calcMapCoorFromPIXIPt(pt);
+
       const sameTile = _oldTile && ptEq(_oldTile.pt, coor);
       _oldTile = coor ? this.cacheManager.getFreshObjOrNull(this.mapLayerCacheKey, ...coor) : null;
 
@@ -212,6 +213,8 @@ class MapLayer extends Layer {
         _oldTile?.createHoverOverlay();
       if (this.renderer.onCursorType && (_cursorType = this.renderer.onCursorType(coor)))
         this.renderer.applyCursor(_cursorType);
+      else
+        this.renderer.applyCursor('');
 
       if (this.renderer.onTileTooltip) {
         if (!sameTile) {

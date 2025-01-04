@@ -37,6 +37,7 @@ class MapRenderer extends Renderer {
 
   selectableMask;
   selectionStarted = false;
+  selectedPts = [];
 
   async begin({ gamestate, mapObj }) {
     await super.begin();
@@ -74,16 +75,33 @@ class MapRenderer extends Renderer {
     this.selectableMask = map_mask_create(this.mapObj, false);
   }
 
-  beginSelection({
+  async beginSelection({
     mask = null,
-    callback = async () => {},
+
+    /**
+     * A callback on click and brush.
+     *
+     * Set callback to falsy if selection functionality is not used.
+     *
+     * Returns falsy if the selection process should terminate.
+     *
+     * Returns [color, alpha] if the selected tile should be highlighted in the
+     * provided color; a trusy return value would use the default color.
+     *
+     * ([row, col]) => falsy | [color, alpha] | trusy
+     */
+    onTileSelect = async (_coor) => {},
+
     overlay = true,
 
     // set to false if leaving untouched for below handlers:
     onTileTooltip = null,
-    onCursorType = ([r, c]) => this.selectableMask[r][c] ? 'pointer' : 'not-allowed'
+    onCursorType = (coor) => map_mask_at(this.selectableMask, coor) ? 'pointer' : 'not-allowed',
+
+    endSelectionOpts = {}, // arguments passed to endSelection
   }={}) {
-    this.selectionStarted && this.endSelection();
+    this.selectedPts = [];
+    this.selectionStarted && (await this.endSelection(endSelectionOpts));
 
     this.selectionStarted = true;
 
@@ -92,16 +110,58 @@ class MapRenderer extends Renderer {
     this.mapLayer.applySelectableMask(this.selectableMask);
 
     if (overlay)
-      this.onTileHoverOverlay = ([row, col]) => !!this.selectableMask[row][col];
+      this.onTileHoverOverlay = (coor) => !!map_mask_at(this.selectableMask, coor);
 
     if (onTileTooltip !== false)
       this.onTileTooltip = onTileTooltip;
     if (onCursorType !== false)
       this.onCursorType = onCursorType;
+
+    if (!onTileSelect)
+      return;
+
+    // Handle selection logics
+
+    this.viewport.registerOnBrush("mapRendererSelection", async (pt) => {
+      const coor = this.mapLayer.calcMapCoorFromPIXIPt(pt);
+
+      if (!coor || !map_at(this.mapObj, coor) ||
+        !this.selectableMask[coor[0]][coor[1]] || this.checkTileSelected(coor))
+        return;
+
+      this.selectedPts.push(coor);
+
+      const result = await onTileSelect(coor);
+
+      // Default border color to the font color of tile owner
+      let color = gui_calc_font_color_hex(gui_graphics_tile_get_painted_owner_color(this.gamestate, this.graphicsConfig, coor));
+
+      if (!result) {
+        // Terminate selection
+        this.endSelection(endSelectionOpts);
+        return;
+      }
+
+      if (Array.isArray(result))
+        color = result;
+
+      const tile = this.cacheManager.getFreshObjOrNull(this.mapLayer.mapLayerCacheKey, ...coor);
+      tile.selectionBorderColor = color;
+
+      map_instant_neighbors(this.mapObj, coor, tileObj => {
+        this.mapLayer.setTileAsDirty(tileObj.pt);
+      });
+
+      this.mapLayer.setTileAsDirty(coor);
+      await this.updateMapLayer();
+    });
+
+    renderer.viewport.beginBrush();
   }
 
-  endSelection({
-    destroyListeners=true
+  async endSelection({
+    destroyListeners=true,
+    repaintSelectedTiles=true,
   }={}) {
     this.mapLayer.applySelectableMask();
     this.selectionStarted = false;
@@ -109,7 +169,29 @@ class MapRenderer extends Renderer {
     if (destroyListeners) {
       this.onTileHoverOverlay = null;
       this.onTileTooltip = null;
+      this.onCursorType = null;
+      this.viewport.removeOnBrush("mapRendererSelection");
+      this.viewport.endBrush();
     }
+
+    if (repaintSelectedTiles) {
+      for (let i = 0;i < this.selectedPts.length;i++) {
+        const coor = this.selectedPts[i];
+        const tile = this.cacheManager.getObjForce(this.mapLayer.mapLayerCacheKey, ...coor);
+
+        tile.selectionBorderColor = null;
+        this.mapLayer.setTileAsDirty(coor);
+      }
+      await this.updateMapLayer();
+    }
+  }
+
+  checkTileSelected(coor) {
+    for (let i = 0;i < this.selectedPts?.length;i++) {
+      if (ptEq(coor, this.selectedPts[i]))
+        return true;
+    }
+    return false;
   }
 
   applyCursor(type) {
