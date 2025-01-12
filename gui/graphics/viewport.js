@@ -221,7 +221,7 @@ class Viewport {
 
       this.#onHoverCallbacks.forEach((callback) => {
         callback(
-          this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)),
+          this.container.toLocal(new PIXI.Point(event.canvasX, event.canvasY)),
           event
         );
       });
@@ -234,7 +234,7 @@ class Viewport {
 
       this.#onBrushCallbacks.forEach((callback) => {
         callback(
-          this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY)),
+          this.container.toLocal(new PIXI.Point(event.canvasX, event.canvasY)),
           event
         );
       });
@@ -402,7 +402,7 @@ class Viewport {
       this.#pointersDown.length === 0 &&
       !this.#pinchInProgress && !this.#panInProgress
     ) {
-      const localPt = this.container.toLocal(new PIXI.Point(event.offsetX, event.offsetY));
+      const localPt = this.container.toLocal(new PIXI.Point(event.canvasX, event.canvasY));
 
        if (this.#brushInProgress) {
         // If in brush mode, interpret click as a brush action
