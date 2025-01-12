@@ -4,9 +4,6 @@ class Viewport {
   container;
   renderer;
 
-  viewportWidth;
-  viewportHeight;
-
   minPanThreshold;
 
   #onHoverCallbacks = new Map();
@@ -45,9 +42,6 @@ class Viewport {
     this.renderer = renderer;
     this.domElement = renderer.containerElement;
 
-    this.viewportWidth = viewportWidth || this.domElement.canvasX;
-    this.viewportHeight = viewportHeight || this.domElement.canvasY;
-
     this.minPanThreshold = minPanThreshold || 5;
 
     this.container = new PIXI.Container();
@@ -58,6 +52,13 @@ class Viewport {
     this.container.eventMode = 'static';
 
     this.renderer.addTickerSequence(this.update);
+  }
+
+  get viewportWidth() {
+    return this.domElement.clientWidth;
+  }
+  get viewportHeight() {
+    return this.domElement.clientHeight;
   }
 
   update = (time) => {
@@ -82,8 +83,10 @@ class Viewport {
       (Math.abs(this.#inertiaVelocity[0]) > 0.2 ||
         Math.abs(this.#inertiaVelocity[1]) > 0.2)
     ) {
-      this.container.x += this.#inertiaVelocity[0] * timeFactor;
-      this.container.y += this.#inertiaVelocity[1] * timeFactor;
+      this.pan([
+        this.#inertiaVelocity[0] * timeFactor,
+        this.#inertiaVelocity[1] * timeFactor
+      ]);
       // apply friction
       this.#inertiaVelocity[0] *= Math.min(0.99, this.#inertiaFriction / timeFactor);
       this.#inertiaVelocity[1] *= Math.min(0.99, this.#inertiaFriction / timeFactor);
@@ -302,8 +305,29 @@ class Viewport {
   }
 
   pan([canvasX, canvasY]) {
-    this.container.x += canvasX;
-    this.container.y += canvasY;
+    // this is a getter/setter, so we better use it only when necessary
+    const x0 = this.container.x;
+    const y0 = this.container.y;
+
+    let x = x0, y = y0;
+    x += canvasX;
+    y += canvasY;
+
+    const containerW = this.container.width;
+    const containerH = this.container.height;
+
+    const minX = -containerW + this.viewportWidth * 0.2;
+    const maxX = this.viewportWidth * 0.8;
+    const minY = -containerH + this.viewportHeight * 0.2;
+    const maxY = this.viewportHeight * 0.8;
+
+    x = Math.max(Math.min(x, maxX), minX);
+    y = Math.max(Math.min(y, maxY), minY);
+
+    if (x != x0)
+      this.container.x = x;
+    if (y != y0)
+      this.container.y = y;
   }
 
   pinchFrom(zoomFactor, pt) {
@@ -366,13 +390,18 @@ class Viewport {
       }
     }
 
-    if (
-      this.#panInProgress &&
-      Date.now() - this.#inertiaVelocityLastUpdate > this.#inertiaMinTime) {
-      this.#inertiaVelocity = [0, 0];
+    if (this.#panInProgress) {
+      if (
+        Math.abs(this.#inertiaVelocity[0]) < this.#inertiaMinSpeed ||
+        Math.abs(this.#inertiaVelocity[1]) < this.#inertiaMinSpeed ||
+        Date.now() - this.#inertiaVelocityLastUpdate > this.#inertiaMinTime
+      ) {
+        this.#inertiaVelocity = [0, 0];
+      }
+
+      this.#pinchInProgress = false;
     }
 
-    this.#pinchInProgress = false;
     this.#panInProgress = false;
   }
 

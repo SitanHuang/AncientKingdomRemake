@@ -56,7 +56,7 @@ class TileLayer extends Layer {
 
     const [x, y] = this.mapLayer.calcTileMapCoor(this.pt);
 
-    const bounds = new PIXI.Rectangle(x, y, this.TILE_SIZE, this.TILE_SIZE);
+    const bounds = new PIXI.Rectangle(0, 0, this.TILE_SIZE, this.TILE_SIZE);
     const hitArea = new PIXI.Rectangle(0, 0, this.TILE_SIZE, this.TILE_SIZE);
 
     this.tileContainer.x = x;
