@@ -35,8 +35,6 @@ class Viewport {
 
   constructor({
     renderer,
-    viewportWidth,
-    viewportHeight,
     minPanThreshold
   }) {
     this.renderer = renderer;
@@ -284,8 +282,7 @@ class Viewport {
       if (this.#panInProgress) {
         event._maskEvents = true;
 
-        this.#inertiaVelocity = [event.canvasX - oldEvent.canvasX, event.canvasY - oldEvent.canvasY];
-
+        this.#inertiaVelocity = diff;
         this.#inertiaVelocityLastUpdate = Date.now();
 
         this.pan(this.#inertiaVelocity);
@@ -301,7 +298,7 @@ class Viewport {
     return this.#zoom;
   }
   set zoom(zoom) {
-    this.#zoom = Math.max(0.05, Math.min(2, zoom));
+    this.#zoom = Math.max(0.05, Math.min(3, zoom));
   }
 
   pan([canvasX, canvasY]) {
@@ -316,8 +313,8 @@ class Viewport {
     const containerW = this.container.width;
     const containerH = this.container.height;
 
-    const minX = -containerW + this.viewportWidth * 0.2;
-    const maxX = this.viewportWidth * 0.8;
+    const minX = -containerW + this.viewportHeight * 0.2;
+    const maxX = this.viewportWidth - this.viewportHeight * 0.2;
     const minY = -containerH + this.viewportHeight * 0.2;
     const maxY = this.viewportHeight * 0.8;
 
@@ -331,7 +328,7 @@ class Viewport {
   }
 
   pinchFrom(zoomFactor, pt) {
-    this.zoom *= zoomFactor
+    this.zoom *= zoomFactor;
 
     this.applyZoom(pt);
   }
@@ -345,6 +342,36 @@ class Viewport {
     const newPoint = this.container.toGlobal(oldPoint);
     this.container.x += screenCoor.x - newPoint.x;
     this.container.y += screenCoor.y - newPoint.y;
+  }
+
+  /**
+   * Resets the container so it fits entirely in the viewport and is centered.
+   * If centerX/centerY are given, that unscaled coordinate will be placed
+   * in the middle of the viewport instead.
+   *
+   * @param {object} options
+   * @param {number} [options.centerX] - Unscaled x-coordinate to center on
+   * @param {number} [options.centerY] - Unscaled y-coordinate to center on
+   */
+  resetView({ centerX = null, centerY = null } = {}) {
+    const unscaledW = this.container.width / this.zoom;
+    const unscaledH = this.container.height / this.zoom;
+
+    const vpW = this.viewportWidth;
+    const vpH = this.viewportHeight;
+
+    // "Fit in" scale.  Pick the smaller ratio so the entire container fits.
+    const scale = Math.min(vpW / unscaledW, vpH / unscaledH);
+
+    this.container.scale = this.zoom = scale;
+
+    if (centerX !== null && centerY !== null) {
+      this.container.x = vpW / 2 - centerX * scale;
+      this.container.y = vpH / 2 - centerY * scale;
+    } else {
+      this.container.x = (vpW - unscaledW * scale) / 2;
+      this.container.y = (vpH - unscaledH * scale) / 2;
+    }
   }
 
   pointerUpHandler = (event) => {
