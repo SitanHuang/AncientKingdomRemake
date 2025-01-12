@@ -28,6 +28,12 @@ class Viewport {
   #wheelSmoother = new ExponentialSmoother({ alpha: 150, duration: 250 });
   #wheelTarget;
 
+  #inertiaVelocity =[0, 0];
+  #inertiaVelocityLastUpdate = Date.now();
+  #inertiaFriction = 0.9;
+  #inertiaMinSpeed = 2.50;
+  #inertiaMinTime = 50; // ms; holding beyond this time removes inertia
+
   log = Logger.get("Viewport");
 
   constructor({
@@ -55,6 +61,8 @@ class Viewport {
   }
 
   update = (time) => {
+    const timeFactor = (time.deltaMS + 0.1) / 16.7;
+
     if (this.#wheelTarget) {
       this.zoom = this.#wheelSmoother.applySmoothing(
         time.deltaMS,
@@ -66,6 +74,22 @@ class Viewport {
 
       if (this.#wheelSmoother.isStopped)
         this.#wheelTarget = null;
+    }
+
+    // Inertial panning
+    if (
+      !this.#pointersDown.length &&
+      (Math.abs(this.#inertiaVelocity[0]) > 0.2 ||
+        Math.abs(this.#inertiaVelocity[1]) > 0.2)
+    ) {
+      this.container.x += this.#inertiaVelocity[0] * timeFactor;
+      this.container.y += this.#inertiaVelocity[1] * timeFactor;
+      // apply friction
+      this.#inertiaVelocity[0] *= Math.min(0.99, this.#inertiaFriction / timeFactor);
+      this.#inertiaVelocity[1] *= Math.min(0.99, this.#inertiaFriction / timeFactor);
+    } else if (!this.#pointersDown.length) {
+      // once below threshold, snap to zero to prevent drifting forever
+      this.#inertiaVelocity = [0, 0];
     }
   };
 
@@ -179,6 +203,8 @@ class Viewport {
       // disable events on children
       this.container.eventMode = 'none';
     }
+
+    this.#inertiaVelocity = [0, 0];
   }
 
   pointerMoveHandler = (event) => {
@@ -255,10 +281,11 @@ class Viewport {
       if (this.#panInProgress) {
         event._maskEvents = true;
 
-        this.pan([
-          event.canvasX - oldEvent.canvasX,
-          event.canvasY - oldEvent.canvasY
-        ]);
+        this.#inertiaVelocity = [event.canvasX - oldEvent.canvasX, event.canvasY - oldEvent.canvasY];
+
+        this.#inertiaVelocityLastUpdate = Date.now();
+
+        this.pan(this.#inertiaVelocity);
       }
     }
 
@@ -337,6 +364,12 @@ class Viewport {
           callback(localPt, event);
         });
       }
+    }
+
+    if (
+      this.#panInProgress &&
+      Date.now() - this.#inertiaVelocityLastUpdate > this.#inertiaMinTime) {
+      this.#inertiaVelocity = [0, 0];
     }
 
     this.#pinchInProgress = false;
