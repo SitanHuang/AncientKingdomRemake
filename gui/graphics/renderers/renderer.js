@@ -37,12 +37,18 @@ class Renderer {
   }
 
   async init(_intent={}) {
-    const app = this.app = new PIXI.Application({
-      antialias: true
+    const SCALE = 2;
+
+    const app = this.app = new PIXI.Application();
+    await app.init({
+      antialias: true,
+      resolution: SCALE,
     });
-    await app.init();
 
     app.resizeTo = this.containerElement;
+
+    this.containerElement.style.transformOrigin = 'top left';
+    this.containerElement.style.transform = `scale(${1 / SCALE})`;
 
     // use shared ticker for entire renderer
     this.ticker = app.ticker;
