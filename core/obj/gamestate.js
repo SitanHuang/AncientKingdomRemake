@@ -51,3 +51,10 @@ function gamestate_create(override={}) {
 function gamestate_save_rand_state(gamestate) {
   gamestate.randState = gamestate._rng.state();
 }
+
+function gamestate_current_civ(gs) {
+  return gs.civs[gs.currentCiv];
+}
+function gamestate_current_gov(gs) {
+  return gamestate_current_civ(gs).govs[gs.currentGov];
+}

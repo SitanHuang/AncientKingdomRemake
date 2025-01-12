@@ -42,6 +42,8 @@ class GameController {
     await this.uiManager.prepTurn();
   }
   async endTurn() {
+    await this.renderer.resetTransientActions();
+
     await api_turn_end_gov(this.gameState);
     await this.uiManager.endTurn();
     await this.prepTurn();

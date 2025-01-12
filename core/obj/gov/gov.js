@@ -8,6 +8,8 @@ function gov_create(override) {
     permissions: {},
     policies: {},
 
+    isAI: false,
+
     tab: tab_create()
   };
 

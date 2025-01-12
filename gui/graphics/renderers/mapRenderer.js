@@ -186,6 +186,10 @@ class MapRenderer extends Renderer {
     }
   }
 
+  async resetTransientActions() {
+    await this.endSelection();
+  }
+
   checkTileSelected(coor) {
     for (let i = 0;i < this.selectedPts?.length;i++) {
       if (ptEq(coor, this.selectedPts[i]))

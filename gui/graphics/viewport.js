@@ -21,6 +21,8 @@ class Viewport {
   #pinchDistLast; // enables pinch zoom
   #pinchCenterLast; // enables pinch zoom + pan
 
+  #shiftKeyDown = false;
+
   #zoom = 1;
 
   #wheelSmoother = new ExponentialSmoother({ alpha: 150, duration: 250 });
@@ -80,6 +82,10 @@ class Viewport {
     this.domElement.addEventListener('pointerout', this.pointerUpHandler);
     this.domElement.addEventListener('pointerleave', this.pointerUpHandler);
     this.domElement.addEventListener('wheel', this.wheelHandler);
+
+    window.addEventListener('keydown', this.keyDownHandler);
+    window.addEventListener('keyup', this.keyUpHandler);
+    window.addEventListener('blur', this.keyUpHandler);
   }
 
   destroy() {
@@ -90,6 +96,14 @@ class Viewport {
     this.domElement.removeEventListener('pointerout', this.pointerUpHandler);
     this.domElement.removeEventListener('pointerleave', this.pointerUpHandler);
     this.domElement.removeEventListener('wheel', this.wheelHandler);
+
+    window.removeEventListener('keydown', this.keyDownHandler);
+    window.removeEventListener('keyup', this.keyUpHandler);
+    window.removeEventListener('blur', this.keyUpHandler);
+  }
+
+  resetTransientActions() {
+    this.#brushInProgress && this.endBrush();
   }
 
   addChild(child) {
@@ -125,6 +139,13 @@ class Viewport {
     this.#brushInProgress = false;
     this.#pointersDown = [];
   }
+
+  keyDownHandler = (event) => {
+    this.#shiftKeyDown = event.shiftKey;
+  };
+  keyUpHandler = (event) => {
+    this.#shiftKeyDown = typeof event.shiftKey == 'boolean' ? event.shiftKey : false;
+  };
 
   wheelHandler = (event) => {
     calcOffsetCoors(event);
@@ -181,7 +202,7 @@ class Viewport {
       return;
     }
 
-    if (this.#brushInProgress) {
+    if (this.#brushInProgress && this.#shiftKeyDown) {
       // previously touched down (index != -1)
 
       this.#onBrushCallbacks.forEach((callback) => {
