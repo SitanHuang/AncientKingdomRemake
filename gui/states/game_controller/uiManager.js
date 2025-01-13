@@ -29,7 +29,7 @@ class GameControllerUIManager {
   }
 
   async resetTransientActions() {
-    this.closeLeftPane(); // don't wait on this
+    await this.closeLeftPane(true);
   }
 
   async renderHeader() {
@@ -88,7 +88,11 @@ class GameControllerUIManager {
     }
   }
 
-  async closeLeftPane() {
+  async closeLeftPane(force=true) {
+    if (force) {
+      this.$leftPane.removeClass('animate-start').removeClass('animate-end').removeClass('shown');
+      return;
+    }
     await gui_wrap_timeout_promise(_ => this.$leftPane.addClass('animate-end'), 0);
     await gui_wrap_timeout_promise(_ => this.$leftPane.removeClass('shown'), 250);
     this.$leftPane.removeClass('animate-start').removeClass('animate-end');

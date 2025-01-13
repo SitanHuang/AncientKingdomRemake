@@ -168,6 +168,9 @@ class MapRenderer extends Renderer {
     repaintSelectedTiles = true,
     callback = null,
   }={}) {
+    if (!this.selectionStarted)
+      return;
+
     this.mapLayer.applySelectableMask();
     this.selectionStarted = false;
 
