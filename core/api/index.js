@@ -35,13 +35,17 @@ async function api_turn_prep_gov(gs) {
   const gov = gamestate_current_gov(gs);
 
   // AI
-  if (gov.isAI) {
-    // TODO: AI think
-    await api_turn_end_gov(gs);
-  }
+  // if (gov.isAI) {
+  //   // TODO: AI think (but how we update GUI?)
+  //   await api_turn_end_gov(gs);
+  // }
 }
 
 async function api_turn_end_gov(gs) {
+  const [civ, gov] = gamestate_current_civ_gov(gs);
+
+  civ.spawned = true;
+
   api_loop_increment_order(gs);
 
   if (gs.currentOrderInd >= gs.currentOrders.length) {
@@ -63,4 +67,14 @@ async function api_turn_end_round(gs) {
 
 async function api_turn_end_cycle(gs) {
 
+}
+
+function api_set_dirty_tile_and_neighbors(gs, pt) {
+  const tiles = gs.map.tiles;
+  const queue = gs._changedTiles;
+  tiles[pt[0]][pt[1]] && queue.push(pt);
+  tiles[pt[0] + 1] && tiles[pt[0]][pt[1]] && queue.push([pt[0] + 1, pt[1]]);
+  tiles[pt[0] - 1] && tiles[pt[0]][pt[1]] && queue.push([pt[0] - 1, pt[1]]);
+  tiles[pt[0]] && tiles[pt[0]][pt[1] + 1] && queue.push([pt[0], pt[1] + 1]);
+  tiles[pt[0]] && tiles[pt[0]][pt[1] - 1] && queue.push([pt[0], pt[1] - 1]);
 }

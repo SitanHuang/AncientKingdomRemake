@@ -2,8 +2,6 @@ function tile_create(override) {
   const { row, col } = override;
 
   const tile = {
-    _pop: 0, // TODO: change to cultures; for now this should not be accessed directly
-
     pt: [row, col],
 
     row: row,
@@ -95,6 +93,31 @@ function tile_id_from_pt(row, col) {
 function tile_get_owner(gs, tile) {
   return gs?.civs[tile?.owner];
 }
+function tile_get_controller(gs, tile) {
+  return gs?.civs[tile?.controller];
+}
+function tile_reset_owner(gs, tile, newOwner) {
+  // if (tile.owner == newOwner)
+  //   return;
+
+  // if (tile.owner !== 0) {
+  //   tile_get_owner(gs, tile).stat.tilesOwned--;
+  // }
+
+  tile.owner = newOwner;
+  // tile_get_owner(gs, tile).stat.tilesOwned++;
+}
+function tile_reset_controller(gs, tile, newController) {
+  // if (tile.controller == newController)
+  //   return;
+
+  // if (tile.controller !== 0) {
+  //   tile_get_controller(gs, tile).stat.tilesOwned--;
+  // }
+
+  tile.controller = newController;
+  // tile_get_controller(gs, tile).stat.tilesOwned++;
+}
 
 function tile_pt_from_id(id) {
   const row = Math.floor(id / MAP_MAX_LENGTH);
@@ -108,4 +131,8 @@ function tile_dist(pt1, pt2) {
 
 function tile_terrainMod(tile) {
   return terrain_modObj(tile.ter);
+}
+
+function tile_is_uncivilized(tile) {
+  return tile?.owner === 0 && tile?.controller === 0;
 }

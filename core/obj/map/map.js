@@ -48,15 +48,33 @@ function map_mask_create(map, defValue) {
   return rows;
 }
 
+function map_mask_nonempty_tiles(map) {
+  const rows = Array(map.tiles.length);
+  for (let i = 0;i < rows.length;i++) {
+    rows[i] = Array(map.tiles[0].length);
+    for (let j = 0;j < map.tiles[0].length;j++) {
+      rows[i][j] = !!map.tiles[i][j];
+    }
+  }
+  return rows;
+}
+
+function map_mask_uncivilized_tiles(map) {
+  const rows = Array(map.tiles.length);
+  for (let i = 0;i < rows.length;i++) {
+    rows[i] = Array(map.tiles[0].length);
+    for (let j = 0;j < map.tiles[0].length;j++) {
+      rows[i][j] = tile_is_uncivilized(map.tiles[i][j]);
+    }
+  }
+  return rows;
+}
+
 function map_mask_at(mask, coor) {
   if (coor?.length != 2)
     return;
   const [row, col] = coor;
   return mask[row] && mask[row][col];
-}
-
-function map_set_dirty_tile(map, [row, col]) {
-  // TODO: stub
 }
 
 function map_at(map, coor) {

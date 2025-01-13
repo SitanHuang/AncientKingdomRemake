@@ -58,3 +58,6 @@ function gamestate_current_civ(gs) {
 function gamestate_current_gov(gs) {
   return gamestate_current_civ(gs).govs[gs.currentGov];
 }
+function gamestate_current_civ_gov(gs) {
+  return [gamestate_current_civ(gs), gamestate_current_gov(gs)];
+}

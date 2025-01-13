@@ -49,6 +49,7 @@ class Renderer {
 
     this.containerElement.style.transformOrigin = 'top left';
     this.containerElement.style.transform = `scale(${1 / SCALE})`;
+    this.containerElement._transformScale = SCALE;
 
     // use shared ticker for entire renderer
     this.ticker = app.ticker;

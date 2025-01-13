@@ -60,11 +60,13 @@ class Viewport {
   }
 
   update = (time) => {
-    const timeFactor = (time.deltaMS + 0.1) / 16.7;
+    const deltaMS = time.deltaMS;
+
+    const timeFactor = (deltaMS + 0.1) / 16.7;
 
     if (this.#wheelTarget) {
       this.zoom = this.#wheelSmoother.applySmoothing(
-        time.deltaMS,
+        deltaMS,
         this.#wheelTarget.orig,
         this.#wheelTarget.target
       );

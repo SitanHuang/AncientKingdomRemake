@@ -1,11 +1,14 @@
 
 /**
- * Ensures consistent implementation of offsetX/Y across browsers.
+ * Ensures consistent implementation of offsetX/Y across browsers and
+ * element transform.
  *
  * (Sometimes Firefix sets offsetX/Y to zero after event has gone away)
+ * (offsetX/Y can't be overridden; canvasX/Y is custom that accounts for transform)
  */
 function calcOffsetCoors(e) {
-  let rect = (e.target || e.srcElement).getBoundingClientRect();
+  const ele = e.target || e.srcElement;
+  const rect = ele.getBoundingClientRect();
 
   e.offsetX = e.clientX - rect.left;
   e.offsetY = e.clientY - rect.top;

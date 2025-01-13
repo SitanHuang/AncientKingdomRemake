@@ -10,7 +10,10 @@ function gov_create(override) {
 
     isAI: false,
 
-    tab: tab_create()
+    tab: tab_create(override?.tab),
+    stat: stat_create(override?.stat),
+
+    // TODO: central gov depends on buildings prob, not hard location
   };
 
   return Object.assign(gov, override);
@@ -24,4 +27,8 @@ function gov_create_central(civ) {
   });
 
   return gov;
+}
+
+function gov_is_central(gov) {
+  return gov.id == "c";
 }

@@ -11,6 +11,9 @@ async function gui_graphics_tile_drawterrain(tileLayer, tileContainer, tileObj) 
     return;
 
   const { TILE_SIZE, TILE_TERRAIN_TINT, TILE_RIVER_COLOR } = tileLayer.graphicsConfig;
+  const gs = tileLayer.gamestate;
+
+  const isCivilized = !(gs && tile_is_uncivilized(tileObj));
 
   let ctx;
 
@@ -70,8 +73,10 @@ async function gui_graphics_tile_drawterrain(tileLayer, tileContainer, tileObj) 
     con.height = TILE_SIZE;
     con.zIndex = TileLayer.ZINDEX_TERRAIN_SQUARE;
     con.eventMode = 'none';
-    con.tint = TILE_TERRAIN_TINT;
-    con.alpha = 0.7;
+    con.tint = isCivilized ?
+      gui_calc_font_color_hex(tile_get_owner(gs, tileObj).color) :
+      TILE_TERRAIN_TINT;
+    con.alpha = isCivilized ? 1 : 0.7;
 
     tileContainer.addChild(con);
   }

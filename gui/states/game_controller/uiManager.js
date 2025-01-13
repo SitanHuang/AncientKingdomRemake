@@ -4,6 +4,7 @@ class GameControllerUIManager {
   $uiCon;
   $toolbarLeft;
   $toolbarRight;
+  $leftPane;
 
   constructor(gc) {
     this.gameController = gc;
@@ -13,6 +14,7 @@ class GameControllerUIManager {
     this.$uiCon = gui_get$Template('template-game-ui-container').clone().prependTo($uiLayer);
     this.$toolbarLeft = this.$uiCon.find('.top-toolbar.left');
     this.$toolbarRight = this.$uiCon.find('.top-toolbar.right');
+    this.$leftPane = this.$uiCon.find('.left-pane');
   }
 
   async cleanup() {
@@ -23,7 +25,11 @@ class GameControllerUIManager {
     await this.renderHeader();
   }
   async endTurn() {
+    await this.resetTransientActions();
+  }
 
+  async resetTransientActions() {
+    await this.closeLeftPane();
   }
 
   async renderHeader() {
@@ -53,6 +59,39 @@ class GameControllerUIManager {
       { type: 'html' }
     );
     // TODO: show via tooltip how many cycles left
+
+    if (!civ.spawned && gov_is_central(gov)) {
+      await gui_gc_place_capital(this);
+    }
+  }
+
+  async animateLeftPane({
+    $child=undefined,
+    title='',
+    width='',
+    closeable=true,
+  }={}) {
+    this.$leftPane.removeClass('animate-start').removeClass('animate-end').removeClass('shown');
+
+    $child && this.$leftPane.find('.content').html('').append($child);
+    this.$leftPane.css('width', width).find('.header .title').text(title);
+
+    await gui_wrap_timeout_promise(_ => this.$leftPane.addClass('animate-start'), 0);
+    this.$leftPane.addClass('shown');
+
+    if (!closeable) {
+      this.$leftPane.find('.header .close').hide();
+    } else {
+      this.$leftPane.find('.header .close').show()[0].onclick = () => {
+        this.closeLeftPane();
+      };
+    }
+  }
+
+  async closeLeftPane() {
+    await gui_wrap_timeout_promise(_ => this.$leftPane.addClass('animate-end'), 0);
+    await gui_wrap_timeout_promise(_ => this.$leftPane.removeClass('shown'), 250);
+    this.$leftPane.removeClass('animate-start').removeClass('animate-end');
   }
 
   get gameState() {

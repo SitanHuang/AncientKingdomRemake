@@ -90,7 +90,7 @@ class MapRenderer extends Renderer {
      *
      * ([row, col]) => falsy | [color, alpha] | trusy
      */
-    onTileSelect = async (_coor) => {},
+    onTileSelect = async (_pt) => {},
 
     overlay = true,
 
@@ -98,10 +98,14 @@ class MapRenderer extends Renderer {
     onTileTooltip = null,
     onCursorType = (coor) => map_mask_at(this.selectableMask, coor) ? 'pointer' : 'not-allowed',
 
+    callback = null, // alias to endSelectionOpts.callback but not after the pre-selection endSelectino call
+
     endSelectionOpts = {}, // arguments passed to endSelection
   }={}) {
     this.selectedPts = [];
     this.selectionStarted && (await this.endSelection(endSelectionOpts));
+
+    callback && (endSelectionOpts.callback = callback);
 
     this.selectionStarted = true;
 
@@ -160,8 +164,9 @@ class MapRenderer extends Renderer {
   }
 
   async endSelection({
-    destroyListeners=true,
-    repaintSelectedTiles=true,
+    destroyListeners = true,
+    repaintSelectedTiles = true,
+    callback = null,
   }={}) {
     this.mapLayer.applySelectableMask();
     this.selectionStarted = false;
@@ -184,6 +189,8 @@ class MapRenderer extends Renderer {
       }
       await this.updateMapLayer();
     }
+
+    callback && (await callback(this.selectedPts));
   }
 
   async resetTransientActions() {
@@ -207,6 +214,21 @@ class MapRenderer extends Renderer {
 
   async updateMapLayer(_intent) {
     await this.mapLayer.update(_intent);
+  }
+
+  async clearGamestateDirtyTiles() {
+    const queue = this.gamestate?._changedTiles;
+
+    if (!queue)
+      return;
+
+    for (const pt of queue) {
+      this.mapLayer.setTileAsDirty(pt);
+    }
+
+    await this.updateMapLayer();
+
+    queue.length = 0;
   }
 
   async cleanup() {

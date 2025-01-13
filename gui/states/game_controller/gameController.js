@@ -43,6 +43,7 @@ class GameController {
   }
   async endTurn() {
     await this.renderer.resetTransientActions();
+    await this.uiManager.resetTransientActions();
 
     await api_turn_end_gov(this.gameState);
     await this.uiManager.endTurn();
@@ -59,6 +60,12 @@ class GameController {
 
     await renderer.init();
     await renderer.begin({ gamestate: this.gameState, mapObj: this.gameState.map });
+
+    this.renderer.viewport.resetView();
+  }
+
+  async clearGamestateDirtyTiles() {
+    await this.renderer.clearGamestateDirtyTiles();
   }
 
   async cleanup() {

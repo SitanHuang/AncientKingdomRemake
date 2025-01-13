@@ -19,7 +19,7 @@ function civ_create(override) {
     color: 0x000000,
 
     deceased: true, // whether civ is still active
-    spawned: false, // whether civ was ever spawned in the past / currently
+    spawned: false, // whether capital placement is disabled
   };
 
   return Object.assign(civ, override);

@@ -25,8 +25,12 @@
   <script src="core/obj/stats/hist.js"></script>
   <script src="core/obj/stats/stats.js"></script>
   <script src="core/obj/stats/tab.js"></script>
+
+  <!-- Core: API -->
   <script src="core/api/index.js"></script>
+  <script src="core/api/errors.js"></script>
   <script src="core/api/loop.js"></script>
+  <script src="core/api/actions/place_capital.js"></script>
 
   <!-- UI: External -->
   <script src="gui/ext/jquery-3.7.1.min.js"></script>
@@ -68,6 +72,7 @@
   <script src="gui/states/gameLoader.js"></script>
   <script src="gui/states/game_controller/gameController.js"></script>
   <script src="gui/states/game_controller/uiManager.js"></script>
+  <script src="gui/states/game_controller/actions/placeCapital.js"></script>
 
   <link rel="stylesheet" href="gui/ext/normalize.css">
   <link rel="stylesheet" href="gui/ext/simple-grid.min.css">
@@ -130,10 +135,32 @@
           <i class='bx bx-chevron-right'></i>
           <span class="gov"></span>
         </item>
+        <item class="stat pop">
+          <i class='bx bx-male-female'></i>
+          <span>0</span>
+        </item>
+        <item class="stat prod">
+          <i class='bx bxl-product-hunt'></i>
+          <span>0</span>
+        </item>
       </div>
       <div class="top-toolbar right">
         <item class="date">January 2, 1400 BCE</item>
         <item class="end-turn button"><i class='bx bx-play'></i></item>
+      </div>
+      <div class="left-pane">
+        <div class="header">
+          <div class="title"></div>
+          <div class="close">
+            <i class='bx bxs-x-circle'></i>
+          </div>
+        </div>
+        <div class="content"></div>
+      </div>
+    </div>
+    <div class="template-gc-capital-placement">
+      <div class="pad">
+        <i>Place your capital on the map...</i>
       </div>
     </div>
     <div class="template-game-loader scenario-editor-pane">

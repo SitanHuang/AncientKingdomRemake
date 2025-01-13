@@ -10,6 +10,7 @@ function gui_graphics_tile_drawcolor(tileLayer, tileContainer, tileObj) {
     return;
 
   const { TILE_SIZE, TILE_GAP_PX, TILE_BG, TILE_OWNER_NULL_COLOR, TILE_BORDER_SELECTED_PX } = tileLayer.graphicsConfig;
+  const gs = tileLayer.gamestate;
 
   // BG square:
   const bgSquare = new PIXI.Graphics(
@@ -63,8 +64,9 @@ function gui_graphics_tile_drawcolor(tileLayer, tileContainer, tileObj) {
 
   // Owner square
 
-  // TODO: get correct player color
-  const ownerColor = TILE_OWNER_NULL_COLOR;
+  const ownerColor = gs && tile_is_uncivilized(tileObj) ?
+    TILE_OWNER_NULL_COLOR :
+    tile_get_owner(gs, tileObj).color;
 
   const ownerSquare = new PIXI.Graphics(
     tileLayer.getFreshSquareOrReplaceCustom(
