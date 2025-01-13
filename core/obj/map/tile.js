@@ -39,7 +39,7 @@ function tile_create(override) {
     owner: 0, // playerID (0 = none)
     controller: 0, // playerID (0 = none)
 
-    gov: 0, // govID
+    gov: 0, // govID (controller)
     part: 0, // partID
 
     // buildings:
@@ -90,44 +90,52 @@ function tile_id_from_pt(row, col) {
   return row * MAP_MAX_LENGTH + col;
 }
 
+// Benchmark tested method, very FAST
+function tile_pt_from_id(tileID) {
+  return [tileID / MAP_MAX_LENGTH | 0, tileID % MAP_MAX_LENGTH]
+}
+
 function tile_get_owner(gs, tile) {
   return gs?.civs[tile?.owner];
 }
 function tile_get_controller(gs, tile) {
   return gs?.civs[tile?.controller];
 }
+function tile_get_gov(gs, tile) {
+  return gs?.civs[tile?.controller]?.govs?.[tile?.gov];
+}
 function tile_reset_owner(gs, tile, newOwner) {
-  // if (tile.owner == newOwner)
-  //   return;
+  if (tile.owner == newOwner)
+    return;
 
-  // if (tile.owner !== 0) {
-  //   tile_get_owner(gs, tile).stat.tilesOwned--;
-  // }
+  if (tile.owner !== 0) {
+    tilecache_delete(tile_get_owner(gs, tile)._ownedtiles, tile.id);
+  }
 
   tile.owner = newOwner;
-  // tile_get_owner(gs, tile).stat.tilesOwned++;
+  tilecache_add(tile_get_owner(gs, tile)._ownedtiles, tile.id);
 }
 function tile_reset_controller(gs, tile, newController) {
-  // if (tile.controller == newController)
-  //   return;
+  if (tile.controller == newController)
+    return;
 
-  // if (tile.controller !== 0) {
-  //   tile_get_controller(gs, tile).stat.tilesOwned--;
-  // }
+  if (tile.controller !== 0) {
+    tilecache_delete(tile_get_controller(gs, tile)._controlledtiles, tile.id);
+  }
 
   tile.controller = newController;
-  // tile_get_controller(gs, tile).stat.tilesOwned++;
+  tilecache_add(tile_get_controller(gs, tile)._controlledtiles, tile.id);
 }
 function tile_reset_gov(gs, tile, newGov) {
-  // if (tile.gov == newController)
-  //   return;
+  if (tile.gov == newGov)
+    return;
 
-  // if (tile.gov !== 0) {
-  //   tile_get_gov(gs, tile).stat.tilesOwned--;
-  // }
+  if (tile.gov !== 0) {
+    tilecache_delete(tile_get_gov(gs, tile)._tiles, tile.id);
+  }
 
   tile.gov = newController;
-  // tile_get_gov(gs, tile).stat.tilesOwned++;
+  tilecache_add(tile_get_gov(gs, tile)._tiles, tile.id);
 }
 
 function tile_pt_from_id(id) {

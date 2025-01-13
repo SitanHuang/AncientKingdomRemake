@@ -3,6 +3,19 @@
 async function api_begin(gamestate) {
   gamestate = gamestate_create(gamestate);
 
+  // Normalize tile IDs to the current standard
+  for (let i = 0;i < gamestate.map.tiles.length;i++) {
+    for (let j = 0;j < gamestate.map.tiles[0].length;j++) {
+      const tile = gamestate.map.tiles[i][j];
+      if (tile) {
+        tile.row = i;
+        tile.col = j;
+        tile.id = tile_id_from_pt(i, j);
+        assert(tile_pt_from_id(tile.id).join(",") == `${i},${j  }`);
+      }
+    }
+  }
+
   // Normalize all objects
   for (const civID in gamestate.civs) {
     const civ = (gamestate.civs[civID] = civ_create(gamestate.civs[civID]));
@@ -15,6 +28,9 @@ async function api_begin(gamestate) {
       civ.govs[govID] = gov_create(civ.govs[govID]);
     }
   }
+
+  // Initialize tile cache tracking for civ, gov
+  tilecache_initialize(gamestate);
 
   if (!gamestate.currentOrders?.length)
     api_loop_repopulate_orders(gamestate);

@@ -51,3 +51,8 @@ function hook_nonenumerable_ref(obj, key, ref) {
     value: ref
   });
 }
+
+function assert(stmt, msg='') {
+  if (!stmt)
+    throw new Error(`Assertion failed: ${msg}`);
+}
