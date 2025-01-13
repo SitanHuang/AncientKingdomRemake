@@ -194,7 +194,8 @@ class MapRenderer extends Renderer {
   }
 
   async resetTransientActions() {
-    await this.endSelection();
+    if (this.selectionStarted)
+      await this.endSelection(); // very expensive due to mask repaint
   }
 
   checkTileSelected(coor) {

@@ -29,7 +29,7 @@ class GameControllerUIManager {
   }
 
   async resetTransientActions() {
-    await this.closeLeftPane();
+    this.closeLeftPane(); // don't wait on this
   }
 
   async renderHeader() {

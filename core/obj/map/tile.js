@@ -39,7 +39,7 @@ function tile_create(override) {
     owner: 0, // playerID (0 = none)
     controller: 0, // playerID (0 = none)
 
-    gov: 0, // govID, 0 = central
+    gov: 0, // govID
     part: 0, // partID
 
     // buildings:
@@ -117,6 +117,17 @@ function tile_reset_controller(gs, tile, newController) {
 
   tile.controller = newController;
   // tile_get_controller(gs, tile).stat.tilesOwned++;
+}
+function tile_reset_gov(gs, tile, newGov) {
+  // if (tile.gov == newController)
+  //   return;
+
+  // if (tile.gov !== 0) {
+  //   tile_get_gov(gs, tile).stat.tilesOwned--;
+  // }
+
+  tile.gov = newController;
+  // tile_get_gov(gs, tile).stat.tilesOwned++;
 }
 
 function tile_pt_from_id(id) {
