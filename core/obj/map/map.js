@@ -109,32 +109,97 @@ function map_del(map, [row, col]) {
 }
 
 /**
- * UNOPTIMIZED
+ * OPTIMIZED
  *
  * Iterates neighbors instantly (without using cache)
  */
 function map_instant_neighbors(map, [r, c], callback) {
-  let tmp;
+  // let tmp;
 
-  (tmp = map_at(map, [r - 1, c])) && callback(tmp);
-  (tmp = map_at(map, [r + 1, c])) && callback(tmp);
-  (tmp = map_at(map, [r, c - 1])) && callback(tmp);
-  (tmp = map_at(map, [r, c + 1])) && callback(tmp);
+  // (tmp = map_at(map, [r - 1, c])) && callback(tmp);
+  // (tmp = map_at(map, [r + 1, c])) && callback(tmp);
+  // (tmp = map_at(map, [r, c - 1])) && callback(tmp);
+  // (tmp = map_at(map, [r, c + 1])) && callback(tmp);
+
+  /*
+  original callback: 14.260009765625 ms
+  optimized callback: 3.23388671875 ms
+  coords array: 5.785888671875 ms
+  fixed array reuse: 17.26123046875 ms
+  generator: 15.322021484375 ms
+  precached neighbors: 6.9638671875 ms
+  */
+
+  // Below code by deepseek r1 reduces 100x100 map loop from 13ms to 3ms
+  const height = map.height;
+  const width = map.width;
+
+  // Top neighbor
+  if (r > 0) {
+    const tile = map.tiles[r - 1][c];
+    if (tile) callback(tile);
+  }
+
+  // Bottom neighbor
+  if (r < height - 1) {
+    const tile = map.tiles[r + 1][c];
+    if (tile) callback(tile);
+  }
+
+  // Left neighbor
+  if (c > 0) {
+    const tile = map.tiles[r][c - 1];
+    if (tile) callback(tile);
+  }
+
+  // Right neighbor
+  if (c < width - 1) {
+    const tile = map.tiles[r][c + 1];
+    if (tile) callback(tile);
+  }
 }
 
 /**
- * UNOPTIMIZED
+ * OPTIMIZED
  *
  * Iterates neighbors instantly (without using cache)
  */
 function map_instant_neighbors_and_self(map, [r, c], callback) {
-  let tmp;
+  // let tmp;
 
-  (tmp = map_at(map, [r, c])) && callback(tmp);
-  (tmp = map_at(map, [r - 1, c])) && callback(tmp);
-  (tmp = map_at(map, [r + 1, c])) && callback(tmp);
-  (tmp = map_at(map, [r, c - 1])) && callback(tmp);
-  (tmp = map_at(map, [r, c + 1])) && callback(tmp);
+  // (tmp = map_at(map, [r, c])) && callback(tmp);
+  // (tmp = map_at(map, [r - 1, c])) && callback(tmp);
+  // (tmp = map_at(map, [r + 1, c])) && callback(tmp);
+  // (tmp = map_at(map, [r, c - 1])) && callback(tmp);
+  // (tmp = map_at(map, [r, c + 1])) && callback(tmp);
+
+  // same optimization by deepseek as in map_instant_neighbors
+  const height = map.height;
+  const width = map.width;
+
+  // Process self first (original behavior)
+  if (r >= 0 && r < height && c >= 0 && c < width) {
+    const selfTile = map.tiles[r][c];
+    if (selfTile) callback(selfTile);
+  }
+
+  // Process neighbors in original order: top, bottom, left, right
+  if (r > 0) { // Top
+    const tile = map.tiles[r - 1][c];
+    if (tile) callback(tile);
+  }
+  if (r < height - 1) { // Bottom
+    const tile = map.tiles[r + 1][c];
+    if (tile) callback(tile);
+  }
+  if (c > 0) { // Left
+    const tile = map.tiles[r][c - 1];
+    if (tile) callback(tile);
+  }
+  if (c < width - 1) { // Right
+    const tile = map.tiles[r][c + 1];
+    if (tile) callback(tile);
+  }
 }
 
 /**
